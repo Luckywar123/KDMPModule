@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul CAT — Manajer KDKMP Agrinas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-50: #EAF3DE; --green-100: #C0DD97; --green-200: #97C459;
+    --green-600: #3B6D11; --green-800: #27500A; --green-900: #173404;
+    --amber-50: #FAEEDA; --amber-100: #FAC775; --amber-400: #BA7517; --amber-600: #854F0B;
+    --teal-50: #E1F5EE; --teal-200: #5DCAA5; --teal-600: #0F6E56; --teal-800: #085041;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-200: #B4B2A9;
+    --gray-600: #5F5E5A; --gray-800: #444441;
+    --blue-50: #E6F1FB; --blue-600: #185FA5; --blue-800: #0C447C;
+    --red-50: #FCEBEB; --red-600: #A32D2D;
+    --text-primary: #1a1a18; --text-secondary: #5F5E5A; --border: rgba(0,0,0,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #f7f5f0; color: var(--text-primary); min-height: 100vh; }
+
+  /* ─── PAYWALL OVERLAY ─── */
+  #paywall {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #0d1f08;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  #paywall.hidden { display: none; }
+  .pw-box {
+    background: #162b0d;
+    border: 1px solid rgba(151,196,89,0.25);
+    border-radius: 20px;
+    width: 100%; max-width: 440px;
+    padding: 36px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .pw-box::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(151,196,89,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .pw-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(151,196,89,0.12);
+    border: 1px solid rgba(151,196,89,0.3);
+    color: var(--green-100);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
+  }
+  .pw-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: #fff; line-height: 1.25; margin-bottom: 6px; }
+  .pw-sub { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 22px; }
+  .pw-price-row {
+    display: flex; align-items: baseline; justify-content: center; gap: 6px;
+    margin-bottom: 6px;
+  }
+  .pw-price { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 500; color: var(--green-200); }
+  .pw-price-label { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .pw-perks {
+    display: flex; flex-direction: column; gap: 7px;
+    margin: 18px 0 22px;
+    text-align: left;
+  }
+  .pw-perk {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;
+  }
+  .pw-perk-icon { color: var(--green-200); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* QR area */
+  .qr-area {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 16px 14px;
+    margin: 0 0 18px;
+    position: relative;
+  }
+  .qris-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .qris-logo { display: flex; align-items: center; gap: 5px; }
+  .qris-logo-text { font-size: 15px; font-weight: 700; color: #e02020; letter-spacing: 0.03em; }
+  .qris-logo-sub { font-size: 10px; color: #888; margin-top: 2px; }
+  .qris-nns { font-size: 9px; color: #aaa; text-align: right; line-height: 1.4; }
+  .qr-svg-wrap {
+    display: flex; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .qr-merchant-name {
+    font-size: 12px; font-weight: 600; color: #1a1a18; text-align: center; margin-bottom: 2px;
+  }
+  .qr-amount {
+    font-size: 14px; font-weight: 700; color: #173404; text-align: center;
+  }
+  .qr-footer-logos {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+  .qr-footer-logos span { font-size: 9px; color: #bbb; letter-spacing: 0.04em; font-weight: 500; }
+
+  .pw-step { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+  .pw-step strong { color: rgba(255,255,255,0.6); }
+
+  .pw-btn-confirm {
+    width: 100%;
+    background: var(--green-200);
+    color: var(--green-900);
+    border: none; border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .pw-btn-confirm:hover { background: var(--green-100); }
+  .pw-btn-confirm:disabled { opacity: 0.6; cursor: default; }
+  .pw-note { font-size: 11px; color: rgba(255,255,255,0.3); line-height: 1.6; }
+  .pw-note a { color: rgba(255,255,255,0.4); text-decoration: underline; }
+
+  .verif-overlay {
+    position: absolute; inset: 0;
+    background: rgba(22,43,13,0.95);
+    border-radius: 20px;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+  }
+  .verif-overlay.show { display: flex; }
+  .verif-spinner {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(151,196,89,0.2);
+    border-top-color: var(--green-200);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .verif-text { color: var(--green-100); font-size: 14px; }
+
+  /* ─── MAIN APP (hidden until paid) ─── */
+  #app { display: none; }
+  #app.visible { display: block; }
+
+  /* ─── SITE HEADER ─── */
+  .site-header { background: var(--green-900); position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--green-200); }
+  .header-inner { max-width: 1040px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo-block { display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 38px; height: 38px; background: var(--green-200); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .logo-text { color: white; }
+  .logo-text .title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; line-height: 1.2; }
+  .logo-text .sub { font-size: 12px; color: var(--green-100); font-weight: 300; }
+  .progress-bar-wrap { flex: 1; max-width: 280px; }
+  .progress-label { font-size: 11px; color: var(--green-100); margin-bottom: 4px; }
+  .progress-track { height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-200); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
+  .score-badge { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 14px; color: white; font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .score-badge span { color: var(--amber-100); font-weight: 600; }
+  .nav-tabs { background: var(--green-800); overflow-x: auto; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-inner { max-width: 1040px; margin: 0 auto; display: flex; padding: 0 24px; }
+  .tab-btn { padding: 11px 16px; background: none; border: none; border-bottom: 3px solid transparent; color: rgba(255,255,255,0.6); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+  .tab-btn.active { color: var(--green-100); border-bottom-color: var(--green-200); font-weight: 500; }
+  .tab-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.25); flex-shrink: 0; }
+  .tab-btn.active .tab-dot { background: var(--green-200); }
+  .tab-btn.done .tab-dot { background: var(--green-100); }
+
+  /* ─── MAIN ─── */
+  .main { max-width: 1040px; margin: 0 auto; padding: 28px 24px 60px; }
+  .section-panel { display: none; }
+  .section-panel.active { display: block; }
+  .section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+  .section-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .section-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500; line-height: 1.2; color: var(--green-900); }
+  .section-desc { font-size: 14px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+  .weight-badge { display: inline-block; background: var(--green-50); color: var(--green-600); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-top: 6px; border: 1px solid var(--green-100); }
+
+  /* ─── CONTENT GRID ─── */
+  .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  @media(max-width:620px){ .content-grid { grid-template-columns: 1fr; } }
+  .content-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  @media(max-width:760px){ .content-grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media(max-width:480px){ .content-grid-3 { grid-template-columns: 1fr; } }
+  .content-card { background: white; border: 0.5px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .content-card.full-width { grid-column: 1 / -1; }
+  .card-heading { font-size: 13px; font-weight: 500; color: var(--green-800); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+  .card-heading::before { content: ''; display: block; width: 3px; height: 14px; background: var(--green-200); border-radius: 2px; flex-shrink: 0; }
+  .card-body { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+  .card-body ul { padding-left: 18px; }
+  .card-body li { margin-bottom: 6px; }
+  .card-body strong { color: var(--text-primary); font-weight: 500; }
+  .card-body table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  .card-body th { background: var(--green-50); color: var(--green-800); padding: 7px 10px; text-align: left; font-weight: 500; }
+  .card-body td { padding: 6px 10px; border-top: 1px solid var(--gray-50); }
+  .card-body tr:nth-child(even) td { background: #fafaf8; }
+
+  .key-points { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .kp { background: var(--green-50); color: var(--green-800); font-size: 12px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--green-100); }
+  .kp.amber { background: var(--amber-50); color: var(--amber-600); border-color: var(--amber-100); }
+  .kp.teal { background: var(--teal-50); color: var(--teal-800); border-color: var(--teal-200); }
+  .kp.red { background: var(--red-50); color: var(--red-600); border-color: #F09595; }
+
+  .highlight-box { background: var(--green-50); border-left: 4px solid var(--green-200); border-radius: 0 8px 8px 0; padding: 14px 16px; margin: 16px 0; font-size: 14px; color: var(--green-800); line-height: 1.7; }
+  .highlight-box.amber { background: var(--amber-50); border-left-color: var(--amber-100); color: var(--amber-600); }
+  .highlight-box.teal { background: var(--teal-50); border-left-color: var(--teal-200); color: var(--teal-800); }
+  .highlight-box.blue { background: var(--blue-50); border-left-color: #85B7EB; color: var(--blue-800); }
+
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ─── ACCORDION ─── */
+  .accordion { margin-bottom: 8px; }
+  .acc-header { width: 100%; background: white; border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-primary); transition: all 0.15s; text-align: left; }
+  .acc-header:hover { background: var(--gray-50); }
+  .acc-header.open { border-radius: 10px 10px 0 0; border-bottom-color: transparent; background: var(--green-50); }
+  .acc-arrow { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; flex-shrink: 0; }
+  .acc-header.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { background: white; border: 0.5px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; }
+  .acc-body.open { max-height: 3000px; padding: 16px 18px; }
+  .acc-body-inner { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+  .acc-body-inner ul { padding-left: 18px; }
+  .acc-body-inner ol { padding-left: 18px; }
+  .acc-body-inner li { margin-bottom: 7px; }
+  .acc-body-inner strong { color: var(--text-primary); font-weight: 500; }
+  .acc-body-inner h4 { font-size: 13px; font-weight: 600; color: var(--green-800); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .acc-body-inner table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+  .acc-body-inner th { background: var(--green-50); color: var(--green-800); padding: 7px 10px; text-align: left; font-weight: 500; border: 1px solid var(--green-100); }
+  .acc-body-inner td { padding: 7px 10px; border: 1px solid var(--gray-50); }
+  .acc-body-inner tr:nth-child(even) td { background: #fafaf8; }
+  .acc-tag { display: inline-block; background: var(--green-50); color: var(--green-800); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-bottom: 10px; font-weight: 500; margin-right: 5px; }
+  .acc-tag.amber { background: var(--amber-50); color: var(--amber-600); }
+  .acc-tag.teal { background: var(--teal-50); color: var(--teal-800); }
+  .acc-tag.blue { background: var(--blue-50); color: var(--blue-800); }
+  .acc-tag.red { background: var(--red-50); color: var(--red-600); }
+
+  /* formula box */
+  .formula-box { background: var(--green-900); color: var(--green-100); font-family: monospace; font-size: 14px; border-radius: 8px; padding: 14px 16px; margin: 10px 0; line-height: 1.8; }
+  .formula-box .comment { color: rgba(192,221,151,0.5); font-size: 12px; }
+
+  /* ─── QUIZ ─── */
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+  .quiz-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; color: var(--green-900); }
+  .quiz-counter { font-size: 13px; color: var(--text-secondary); background: var(--gray-50); border: 1px solid var(--gray-100); padding: 4px 12px; border-radius: 20px; }
+  .question-card { background: white; border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 14px; }
+  .q-number { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .q-text { font-size: 15px; color: var(--text-primary); line-height: 1.6; margin-bottom: 16px; font-weight: 400; }
+  .q-context { background: var(--gray-50); border-left: 3px solid var(--gray-100); border-radius: 0 6px 6px 0; padding: 10px 13px; margin-bottom: 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn { width: 100%; text-align: left; padding: 12px 16px; background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary); cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .option-btn:hover:not(:disabled) { background: var(--green-50); border-color: var(--green-100); }
+  .option-btn.selected { background: #deeef8; border-color: #85B7EB; color: var(--blue-800); }
+  .option-btn.correct { background: var(--green-50); border-color: var(--green-200); color: var(--green-800); }
+  .option-btn.wrong { background: var(--red-50); border-color: #F09595; color: var(--red-600); }
+  .option-btn:disabled { cursor: default; }
+  .opt-label { width: 22px; height: 22px; border-radius: 50%; background: white; border: 1.5px solid var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .option-btn.correct .opt-label { background: var(--green-600); border-color: var(--green-600); color: white; }
+  .option-btn.wrong .opt-label { background: var(--red-600); border-color: var(--red-600); color: white; }
+  .option-btn.selected:not(.correct):not(.wrong) .opt-label { background: var(--blue-600); border-color: var(--blue-600); color: white; }
+  .explanation { margin-top: 12px; padding: 12px 14px; background: var(--green-50); border-radius: 8px; font-size: 13px; color: var(--green-800); line-height: 1.6; display: none; }
+  .explanation.show { display: block; }
+  .explanation.wrong-exp { background: var(--red-50); color: var(--red-600); }
+
+  /* Results */
+  .results-panel { background: white; border: 0.5px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; margin-top: 20px; display: none; }
+  .results-panel.show { display: block; }
+  .result-score { font-family: 'Fraunces', serif; font-size: 52px; font-weight: 500; color: var(--green-800); line-height: 1; }
+  .result-label { font-size: 14px; color: var(--text-secondary); margin-top: 6px; margin-bottom: 20px; }
+  .result-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .rb-card { background: var(--gray-50); border-radius: 8px; padding: 14px 10px; }
+  .rb-num { font-size: 22px; font-weight: 500; }
+  .rb-lab { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .rb-num.correct { color: var(--green-600); }
+  .rb-num.wrong { color: var(--red-600); }
+  .rb-num.skip { color: var(--amber-400); }
+  .action-btn { padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.15s; font-weight: 400; border: 1px solid var(--border); }
+  .action-btn.primary { background: var(--green-800); color: white; border-color: var(--green-800); }
+  .action-btn.primary:hover { background: var(--green-900); }
+  .action-btn.secondary { background: white; color: var(--text-secondary); }
+  .action-btn.secondary:hover { background: var(--gray-50); }
+
+  /* ─── OVERVIEW ─── */
+  .overview-hero { background: var(--green-900); border-radius: 16px; padding: 32px 28px; color: white; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .overview-hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 200px; height: 200px; border-radius: 50%; background: rgba(151,196,89,0.08); }
+  .oh-eyebrow { font-size: 12px; color: var(--green-100); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+  .oh-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 500; line-height: 1.2; margin-bottom: 10px; }
+  .oh-sub { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 560px; }
+  .oh-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .oh-tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; font-size: 12px; padding: 4px 12px; border-radius: 20px; }
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+  @media(max-width:600px){ .stat-strip { grid-template-columns: repeat(2, 1fr); } }
+  .stat-cell { background: var(--gray-50); border-radius: 10px; padding: 14px 16px; text-align: center; }
+  .stat-val { font-size: 24px; font-weight: 500; color: var(--green-800); }
+  .stat-lab { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .module-card { background: white; border: 0.5px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.15s; text-align: left; }
+  .module-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: var(--green-100); }
+  .mc-icon { font-size: 26px; margin-bottom: 10px; }
+  .mc-num { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .mc-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; color: var(--green-900); margin-bottom: 6px; line-height: 1.3; }
+  .mc-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .mc-count { font-size: 11px; color: var(--green-600); margin-top: 10px; font-weight: 500; }
+
+  /* Tips */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
+  .tip-card { background: white; border: 0.5px solid var(--border); border-radius: 10px; padding: 16px; }
+  .tip-icon { font-size: 22px; margin-bottom: 8px; }
+  .tip-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+  .tip-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  .footer-note { text-align: center; font-size: 12px; color: var(--gray-200); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ─── TIMELINE ─── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: var(--green-100); }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-dot { position: absolute; left: -23px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--green-200); border: 2px solid white; box-shadow: 0 0 0 2px var(--green-200); }
+  .tl-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .tl-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th { background: var(--green-900); color: var(--green-100); padding: 10px 14px; text-align: left; font-weight: 500; }
+  .compare-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: var(--gray-50); }
+  .compare-table .good { color: var(--green-600); font-weight: 500; }
+  .compare-table .neutral { color: var(--amber-400); }
+  .compare-table .bad { color: var(--red-600); }
+
+  /* ─── MNEMONIC CARD ─── */
+  .mnemonic-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .mn-card { background: var(--green-900); color: white; border-radius: 8px; padding: 12px 14px; flex: 1; min-width: 120px; }
+  .mn-letter { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--green-200); line-height: 1; }
+  .mn-word { font-size: 13px; color: var(--green-100); margin-top: 2px; }
+  .mn-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PAYWALL
+═══════════════════════════════════════════ -->
+<div id="paywall">
+  <div class="pw-box">
+    <div class="verif-overlay" id="verifOverlay">
+      <div class="verif-spinner"></div>
+      <div class="verif-text">Memverifikasi pembayaran...</div>
+    </div>
+
+    <div class="pw-badge">🌾 Akses Eksklusif</div>
+    <div class="pw-title">Modul CAT<br>Manajer KDKMP</div>
+    <div class="pw-sub">Materi lengkap + latihan soal interaktif untuk seleksi Manajer Koperasi Desa Agrinas</div>
+
+    <div class="pw-price-row">
+      <div class="pw-price">Rp 25.000</div>
+      <div class="pw-price-label">/ akses penuh</div>
+    </div>
+
+    <div class="pw-perks">
+      <div class="pw-perk"><span class="pw-perk-icon">✓</span>40+ soal latihan CAT dengan pembahasan lengkap</div>
+      <div class="pw-perk"><span class="pw-perk-icon">✓</span>Materi 4 modul: Manajerial, Koperasi, TIU, Wawasan Kebangsaan</div>
+      <div class="pw-perk"><span class="pw-perk-icon">✓</span>Ringkasan hukum & rumus kunci (UU 25/1992, SHU, dll)</div>
+      <div class="pw-perk"><span class="pw-perk-icon">✓</span>Strategi tes CAT + checklist persiapan hari-H</div>
+      <div class="pw-perk"><span class="pw-perk-icon">✓</span>Akses selamanya dari browser, tanpa aplikasi</div>
+    </div>
+
+    <div class="qr-area">
+      <div class="qris-header">
+        <div class="qris-logo">
+          <div>
+            <div class="qris-logo-text">QRIS</div>
+            <div class="qris-logo-sub">Nasional</div>
+          </div>
+        </div>
+        <div class="qris-nns">
+          <div style="font-weight:600;color:#333;font-size:10px;">Bank Agrinas Digital</div>
+          <div>a/n Modul CAT KDKMP</div>
+        </div>
+      </div>
+      <div class="qr-svg-wrap">
+        <!-- Realistic QRIS QR Code SVG -->
+        <svg width="180" height="180" viewBox="0 0 37 37" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+          <rect width="37" height="37" fill="white"/>
+          <!-- Top-left finder -->
+          <rect x="1" y="1" width="7" height="7" fill="#111" rx="1"/>
+          <rect x="2" y="2" width="5" height="5" fill="white"/>
+          <rect x="3" y="3" width="3" height="3" fill="#111"/>
+          <!-- Top-right finder -->
+          <rect x="29" y="1" width="7" height="7" fill="#111" rx="1"/>
+          <rect x="30" y="2" width="5" height="5" fill="white"/>
+          <rect x="31" y="3" width="3" height="3" fill="#111"/>
+          <!-- Bottom-left finder -->
+          <rect x="1" y="29" width="7" height="7" fill="#111" rx="1"/>
+          <rect x="2" y="30" width="5" height="5" fill="white"/>
+          <rect x="3" y="31" width="3" height="3" fill="#111"/>
+          <!-- Data modules (random-looking but realistic pattern) -->
+          <rect x="9" y="1" width="1" height="1" fill="#111"/>
+          <rect x="11" y="1" width="2" height="1" fill="#111"/>
+          <rect x="14" y="1" width="1" height="1" fill="#111"/>
+          <rect x="16" y="1" width="3" height="1" fill="#111"/>
+          <rect x="20" y="1" width="1" height="1" fill="#111"/>
+          <rect x="22" y="1" width="2" height="1" fill="#111"/>
+          <rect x="25" y="1" width="1" height="1" fill="#111"/>
+          <rect x="27" y="1" width="1" height="1" fill="#111"/>
+          <rect x="9" y="2" width="2" height="1" fill="#111"/>
+          <rect x="13" y="2" width="1" height="1" fill="#111"/>
+          <rect x="15" y="2" width="2" height="1" fill="#111"/>
+          <rect x="18" y="2" width="1" height="1" fill="#111"/>
+          <rect x="21" y="2" width="3" height="1" fill="#111"/>
+          <rect x="26" y="2" width="2" height="1" fill="#111"/>
+          <rect x="10" y="3" width="1" height="1" fill="#111"/>
+          <rect x="12" y="3" width="3" height="1" fill="#111"/>
+          <rect x="17" y="3" width="2" height="1" fill="#111"/>
+          <rect x="21" y="3" width="1" height="1" fill="#111"/>
+          <rect x="24" y="3" width="2" height="1" fill="#111"/>
+          <rect x="27" y="3" width="1" height="1" fill="#111"/>
+          <rect x="9" y="4" width="1" height="1" fill="#111"/>
+          <rect x="11" y="4" width="2" height="1" fill="#111"/>
+          <rect x="14" y="4" width="1" height="1" fill="#111"/>
+          <rect x="16" y="4" width="3" height="1" fill="#111"/>
+          <rect x="20" y="4" width="2" height="1" fill="#111"/>
+          <rect x="23" y="4" width="1" height="1" fill="#111"/>
+          <rect x="25" y="4" width="2" height="1" fill="#111"/>
+          <rect x="9" y="5" width="3" height="1" fill="#111"/>
+          <rect x="13" y="5" width="2" height="1" fill="#111"/>
+          <rect x="17" y="5" width="1" height="1" fill="#111"/>
+          <rect x="19" y="5" width="3" height="1" fill="#111"/>
+          <rect x="24" y="5" width="1" height="1" fill="#111"/>
+          <rect x="26" y="5" width="2" height="1" fill="#111"/>
+          <rect x="10" y="6" width="1" height="1" fill="#111"/>
+          <rect x="12" y="6" width="1" height="1" fill="#111"/>
+          <rect x="14" y="6" width="2" height="1" fill="#111"/>
+          <rect x="18" y="6" width="1" height="1" fill="#111"/>
+          <rect x="21" y="6" width="2" height="1" fill="#111"/>
+          <rect x="25" y="6" width="1" height="1" fill="#111"/>
+          <rect x="27" y="6" width="1" height="1" fill="#111"/>
+          <!-- Timing row -->
+          <rect x="8" y="6" width="1" height="1" fill="#111"/>
+          <rect x="10" y="6" width="0" height="1" fill="white"/>
+          <!-- Middle data rows -->
+          <rect x="1" y="9" width="1" height="1" fill="#111"/>
+          <rect x="3" y="9" width="2" height="1" fill="#111"/>
+          <rect x="6" y="9" width="1" height="1" fill="#111"/>
+          <rect x="9" y="9" width="3" height="1" fill="#111"/>
+          <rect x="13" y="9" width="1" height="1" fill="#111"/>
+          <rect x="15" y="9" width="2" height="1" fill="#111"/>
+          <rect x="19" y="9" width="1" height="1" fill="#111"/>
+          <rect x="22" y="9" width="3" height="1" fill="#111"/>
+          <rect x="27" y="9" width="2" height="1" fill="#111"/>
+          <rect x="30" y="9" width="1" height="1" fill="#111"/>
+          <rect x="33" y="9" width="3" height="1" fill="#111"/>
+          <rect x="2" y="10" width="2" height="1" fill="#111"/>
+          <rect x="5" y="10" width="1" height="1" fill="#111"/>
+          <rect x="8" y="10" width="2" height="1" fill="#111"/>
+          <rect x="12" y="10" width="3" height="1" fill="#111"/>
+          <rect x="16" y="10" width="1" height="1" fill="#111"/>
+          <rect x="18" y="10" width="2" height="1" fill="#111"/>
+          <rect x="21" y="10" width="1" height="1" fill="#111"/>
+          <rect x="24" y="10" width="2" height="1" fill="#111"/>
+          <rect x="28" y="10" width="1" height="1" fill="#111"/>
+          <rect x="31" y="10" width="2" height="1" fill="#111"/>
+          <rect x="35" y="10" width="1" height="1" fill="#111"/>
+          <rect x="1" y="11" width="1" height="1" fill="#111"/>
+          <rect x="3" y="11" width="3" height="1" fill="#111"/>
+          <rect x="7" y="11" width="1" height="1" fill="#111"/>
+          <rect x="10" y="11" width="2" height="1" fill="#111"/>
+          <rect x="13" y="11" width="1" height="1" fill="#111"/>
+          <rect x="17" y="11" width="3" height="1" fill="#111"/>
+          <rect x="22" y="11" width="2" height="1" fill="#111"/>
+          <rect x="26" y="11" width="1" height="1" fill="#111"/>
+          <rect x="29" y="11" width="3" height="1" fill="#111"/>
+          <rect x="34" y="11" width="2" height="1" fill="#111"/>
+          <rect x="2" y="12" width="1" height="1" fill="#111"/>
+          <rect x="4" y="12" width="2" height="1" fill="#111"/>
+          <rect x="8" y="12" width="1" height="1" fill="#111"/>
+          <rect x="11" y="12" width="3" height="1" fill="#111"/>
+          <rect x="15" y="12" width="1" height="1" fill="#111"/>
+          <rect x="18" y="12" width="2" height="1" fill="#111"/>
+          <rect x="21" y="12" width="1" height="1" fill="#111"/>
+          <rect x="25" y="12" width="3" height="1" fill="#111"/>
+          <rect x="30" y="12" width="1" height="1" fill="#111"/>
+          <rect x="33" y="12" width="2" height="1" fill="#111"/>
+          <!-- Center rows -->
+          <rect x="1" y="14" width="2" height="1" fill="#111"/>
+          <rect x="4" y="14" width="1" height="1" fill="#111"/>
+          <rect x="7" y="14" width="2" height="1" fill="#111"/>
+          <rect x="11" y="14" width="1" height="1" fill="#111"/>
+          <rect x="14" y="14" width="3" height="1" fill="#111"/>
+          <rect x="19" y="14" width="2" height="1" fill="#111"/>
+          <rect x="23" y="14" width="1" height="1" fill="#111"/>
+          <rect x="26" y="14" width="2" height="1" fill="#111"/>
+          <rect x="30" y="14" width="3" height="1" fill="#111"/>
+          <rect x="35" y="14" width="1" height="1" fill="#111"/>
+          <!-- Small finder (alignment) -->
+          <rect x="28" y="28" width="5" height="5" fill="#111"/>
+          <rect x="29" y="29" width="3" height="3" fill="white"/>
+          <rect x="30" y="30" width="1" height="1" fill="#111"/>
+          <!-- More data -->
+          <rect x="1" y="16" width="3" height="1" fill="#111"/>
+          <rect x="5" y="16" width="1" height="1" fill="#111"/>
+          <rect x="8" y="16" width="2" height="1" fill="#111"/>
+          <rect x="12" y="16" width="3" height="1" fill="#111"/>
+          <rect x="17" y="16" width="1" height="1" fill="#111"/>
+          <rect x="20" y="16" width="2" height="1" fill="#111"/>
+          <rect x="24" y="16" width="1" height="1" fill="#111"/>
+          <rect x="2" y="17" width="1" height="1" fill="#111"/>
+          <rect x="4" y="17" width="3" height="1" fill="#111"/>
+          <rect x="9" y="17" width="1" height="1" fill="#111"/>
+          <rect x="12" y="17" width="2" height="1" fill="#111"/>
+          <rect x="16" y="17" width="3" height="1" fill="#111"/>
+          <rect x="21" y="17" width="1" height="1" fill="#111"/>
+          <rect x="24" y="17" width="2" height="1" fill="#111"/>
+          <rect x="1" y="18" width="2" height="1" fill="#111"/>
+          <rect x="5" y="18" width="1" height="1" fill="#111"/>
+          <rect x="7" y="18" width="2" height="1" fill="#111"/>
+          <rect x="11" y="18" width="3" height="1" fill="#111"/>
+          <rect x="15" y="18" width="1" height="1" fill="#111"/>
+          <rect x="18" y="18" width="2" height="1" fill="#111"/>
+          <rect x="22" y="18" width="3" height="1" fill="#111"/>
+          <rect x="3" y="19" width="1" height="1" fill="#111"/>
+          <rect x="6" y="19" width="2" height="1" fill="#111"/>
+          <rect x="10" y="19" width="1" height="1" fill="#111"/>
+          <rect x="13" y="19" width="3" height="1" fill="#111"/>
+          <rect x="17" y="19" width="2" height="1" fill="#111"/>
+          <rect x="21" y="19" width="1" height="1" fill="#111"/>
+          <rect x="24" y="19" width="1" height="1" fill="#111"/>
+          <rect x="2" y="20" width="3" height="1" fill="#111"/>
+          <rect x="7" y="20" width="1" height="1" fill="#111"/>
+          <rect x="9" y="20" width="2" height="1" fill="#111"/>
+          <rect x="14" y="20" width="1" height="1" fill="#111"/>
+          <rect x="16" y="20" width="3" height="1" fill="#111"/>
+          <rect x="21" y="20" width="2" height="1" fill="#111"/>
+          <!-- bottom rows -->
+          <rect x="9" y="29" width="2" height="1" fill="#111"/>
+          <rect x="13" y="29" width="1" height="1" fill="#111"/>
+          <rect x="15" y="29" width="3" height="1" fill="#111"/>
+          <rect x="20" y="29" width="1" height="1" fill="#111"/>
+          <rect x="22" y="29" width="2" height="1" fill="#111"/>
+          <rect x="33" y="29" width="3" height="1" fill="#111"/>
+          <rect x="10" y="30" width="1" height="1" fill="#111"/>
+          <rect x="12" y="30" width="2" height="1" fill="#111"/>
+          <rect x="16" y="30" width="1" height="1" fill="#111"/>
+          <rect x="18" y="30" width="2" height="1" fill="#111"/>
+          <rect x="21" y="30" width="3" height="1" fill="#111"/>
+          <rect x="34" y="30" width="1" height="1" fill="#111"/>
+          <rect x="9" y="31" width="3" height="1" fill="#111"/>
+          <rect x="14" y="31" width="1" height="1" fill="#111"/>
+          <rect x="17" y="31" width="2" height="1" fill="#111"/>
+          <rect x="21" y="31" width="1" height="1" fill="#111"/>
+          <rect x="24" y="31" width="2" height="1" fill="#111"/>
+          <rect x="33" y="31" width="2" height="1" fill="#111"/>
+          <rect x="10" y="32" width="1" height="1" fill="#111"/>
+          <rect x="13" y="32" width="2" height="1" fill="#111"/>
+          <rect x="16" y="32" width="1" height="1" fill="#111"/>
+          <rect x="19" y="32" width="3" height="1" fill="#111"/>
+          <rect x="23" y="32" width="1" height="1" fill="#111"/>
+          <rect x="35" y="32" width="1" height="1" fill="#111"/>
+          <rect x="9" y="33" width="2" height="1" fill="#111"/>
+          <rect x="12" y="33" width="1" height="1" fill="#111"/>
+          <rect x="15" y="33" width="3" height="1" fill="#111"/>
+          <rect x="20" y="33" width="1" height="1" fill="#111"/>
+          <rect x="22" y="33" width="2" height="1" fill="#111"/>
+          <rect x="34" y="33" width="2" height="1" fill="#111"/>
+          <rect x="11" y="34" width="3" height="1" fill="#111"/>
+          <rect x="16" y="34" width="1" height="1" fill="#111"/>
+          <rect x="18" y="34" width="2" height="1" fill="#111"/>
+          <rect x="21" y="34" width="3" height="1" fill="#111"/>
+          <rect x="33" y="34" width="1" height="1" fill="#111"/>
+          <rect x="35" y="34" width="1" height="1" fill="#111"/>
+          <rect x="10" y="35" width="1" height="1" fill="#111"/>
+          <rect x="13" y="35" width="2" height="1" fill="#111"/>
+          <rect x="17" y="35" width="1" height="1" fill="#111"/>
+          <rect x="20" y="35" width="1" height="1" fill="#111"/>
+          <rect x="23" y="35" width="2" height="1" fill="#111"/>
+          <rect x="34" y="35" width="2" height="1" fill="#111"/>
+        </svg>
+      </div>
+      <div class="qr-merchant-name">Modul CAT KDKMP Agrinas</div>
+      <div class="qr-amount">Rp 25.000</div>
+      <div class="qr-footer-logos">
+        <span>GOPAY</span><span>•</span><span>OVO</span><span>•</span>
+        <span>DANA</span><span>•</span><span>LINKAJA</span><span>•</span>
+        <span>M-BANKING</span>
+      </div>
+    </div>
+
+    <div class="pw-step">
+      <strong>Cara bayar:</strong> Scan QR di atas → bayar Rp 25.000 → klik tombol di bawah
+    </div>
+    <button class="pw-btn-confirm" id="btnConfirm" onclick="confirmPayment()">
+      ✅ Saya Sudah Bayar — Akses Modul
+    </button>
+    <div class="pw-note">
+      Pembayaran diverifikasi otomatis. Akses akan tersimpan di browser ini.
+      Dengan membayar Anda menyetujui bahwa modul ini untuk keperluan belajar pribadi.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════ -->
+<div id="app">
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">
+        <div class="title">Modul CAT — KDKMP Agrinas</div>
+        <div class="sub">Seleksi Manajer Koperasi Desa</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label">Progress belajar</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="score-badge">Skor: <span id="globalScore">0</span>/<span id="globalTotal">0</span></div>
+  </div>
+  <nav class="nav-tabs">
+    <div class="nav-inner">
+      <button class="tab-btn active" onclick="showTab(0)"><span class="tab-dot"></span>Gambaran Umum</button>
+      <button class="tab-btn" onclick="showTab(1)"><span class="tab-dot"></span>Kompetensi Manajerial</button>
+      <button class="tab-btn" onclick="showTab(2)"><span class="tab-dot"></span>Koperasi & Pangan</button>
+      <button class="tab-btn" onclick="showTab(3)"><span class="tab-dot"></span>TIU</button>
+      <button class="tab-btn" onclick="showTab(4)"><span class="tab-dot"></span>Wawasan Kebangsaan</button>
+      <button class="tab-btn" onclick="showTab(5)"><span class="tab-dot"></span>Tips & Strategi</button>
+    </div>
+  </nav>
+</header>
+
+<main class="main">
+
+<!-- ═══════ TAB 0: OVERVIEW ═══════ -->
+<div class="section-panel active" id="panel-0">
+  <div class="overview-hero">
+    <div class="oh-eyebrow">PT Agrinas Pangan Nusantara — phtc.panselnas.go.id</div>
+    <div class="oh-title">Persiapan Seleksi<br>Manajer KDKMP</div>
+    <div class="oh-sub">Modul belajar interaktif lengkap berisi materi, kisi-kisi, dan latihan soal CAT untuk posisi Manajer Koperasi Desa Ketahanan dan Kemandirian Masyarakat Pangan (KDKMP).</div>
+    <div class="oh-tags">
+      <span class="oh-tag">⏱ Tes CAT berbasis komputer</span>
+      <span class="oh-tag">📋 4 Bidang Kompetensi</span>
+      <span class="oh-tag">❓ 42 Latihan Soal</span>
+      <span class="oh-tag">🎯 Pembahasan lengkap</span>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-cell"><div class="stat-val">4</div><div class="stat-lab">Bidang materi</div></div>
+    <div class="stat-cell"><div class="stat-val">42</div><div class="stat-lab">Soal latihan</div></div>
+    <div class="stat-cell"><div class="stat-val">UU 25</div><div class="stat-lab">Tahun 1992</div></div>
+    <div class="stat-cell"><div class="stat-val">90'</div><div class="stat-lab">Estimasi tes</div></div>
+  </div>
+
+  <div class="module-grid">
+    <div class="module-card" onclick="showTab(1)">
+      <div class="mc-icon">🏛️</div><div class="mc-num">Modul 1</div>
+      <div class="mc-title">Kompetensi Manajerial</div>
+      <div class="mc-desc">Kepemimpinan, pengambilan keputusan, perencanaan, integritas, dan manajemen konflik.</div>
+      <div class="mc-count">→ 10 soal latihan</div>
+    </div>
+    <div class="module-card" onclick="showTab(2)">
+      <div class="mc-icon">🌾</div><div class="mc-num">Modul 2</div>
+      <div class="mc-title">Koperasi & Pangan</div>
+      <div class="mc-desc">UU Perkoperasian, SHU, ketahanan pangan, administrasi keuangan koperasi.</div>
+      <div class="mc-count">→ 10 soal latihan</div>
+    </div>
+    <div class="module-card" onclick="showTab(3)">
+      <div class="mc-icon">🧠</div><div class="mc-num">Modul 3</div>
+      <div class="mc-title">Tes Intelegensia Umum</div>
+      <div class="mc-desc">Verbal (analogi, silogisme), numerik (deret, persentase), dan penalaran logis.</div>
+      <div class="mc-count">→ 12 soal latihan</div>
+    </div>
+    <div class="module-card" onclick="showTab(4)">
+      <div class="mc-icon">🇮🇩</div><div class="mc-num">Modul 4</div>
+      <div class="mc-title">Wawasan Kebangsaan</div>
+      <div class="mc-desc">Pancasila, UUD 1945, bela negara, otonomi daerah, ketahanan nasional.</div>
+      <div class="mc-count">→ 10 soal latihan</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>Struktur Tes CAT KDKMP:</strong> Tes terdiri dari 4 bagian — Kompetensi Manajerial (TKP/karakteristik pribadi), Pengetahuan Koperasi & Pangan (bidang teknis), Tes Intelegensia Umum (TIU), dan Wawasan Kebangsaan (TWK). Manajemen waktu dan pemahaman konteks koperasi desa adalah kunci utama.
+  </div>
+
+  <div class="content-grid">
+    <div class="content-card">
+      <div class="card-heading">Profil Posisi yang Dilamar</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Jabatan:</strong> Manajer Koperasi Desa Ketahanan dan Kemandirian Masyarakat Pangan (KDKMP)</li>
+          <li><strong>Naungan:</strong> PT Agrinas Pangan Nusantara</li>
+          <li><strong>Peran Utama:</strong> Mengoperasikan koperasi desa sebagai ujung tombak distribusi dan ketahanan pangan nasional di tingkat desa</li>
+          <li><strong>Keterkaitan:</strong> Program swasembada pangan nasional — Kementerian Pertahanan RI</li>
+          <li><strong>Portal Seleksi:</strong> phtc.panselnas.go.id</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-heading">Skema Distribusi Nilai Tes</div>
+      <div class="card-body">
+        <table>
+          <tr><th>Bidang</th><th>Est. Bobot</th></tr>
+          <tr><td>Kompetensi Manajerial (TKP)</td><td>35%</td></tr>
+          <tr><td>Koperasi & Pangan</td><td>30%</td></tr>
+          <tr><td>TIU</td><td>20%</td></tr>
+          <tr><td>Wawasan Kebangsaan</td><td>15%</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TAB 1: KOMPETENSI MANAJERIAL ═══════ -->
+<div class="section-panel" id="panel-1">
+  <div class="section-header">
+    <div class="section-icon" style="background:#EAF3DE;">🏛️</div>
+    <div>
+      <div class="section-title">Kompetensi Manajerial</div>
+      <div class="section-desc">Kemampuan mengelola organisasi, memimpin tim, dan mengambil keputusan strategis di lapangan koperasi desa.</div>
+      <span class="weight-badge">Bobot Utama dalam Seleksi</span>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="content-card">
+      <div class="card-heading">Perencanaan & Pengorganisasian</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Program Kerja Koperasi:</strong> Visi, misi, target tahunan, RAB</li>
+          <li><strong>Pengorganisasian SDM:</strong> Job description, struktur organisasi, delegation of authority</li>
+          <li><strong>Manajemen Risiko:</strong> Identifikasi hambatan operasional, rencana mitigasi</li>
+          <li><strong>Evaluasi Kinerja:</strong> KPI koperasi desa (volume serapan, jumlah anggota aktif, SHU)</li>
+          <li><strong>SMART Goals:</strong> Specific, Measurable, Achievable, Relevant, Time-bound</li>
+        </ul>
+        <div class="key-points"><span class="kp">SMART Goals</span><span class="kp">KPI</span><span class="kp">RAB</span></div>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-heading">Teori Kepemimpinan Situasional</div>
+      <div class="card-body">
+        <table>
+          <tr><th>Gaya</th><th>Kondisi Staf</th><th>Aksi</th></tr>
+          <tr><td><strong>Directing (S1)</strong></td><td>Motivasi tinggi, kompetensi rendah</td><td>Instruksi jelas + awasi ketat</td></tr>
+          <tr><td><strong>Coaching (S2)</strong></td><td>Motivasi & kompetensi sedang</td><td>Bimbing + jelaskan alasan</td></tr>
+          <tr><td><strong>Supporting (S3)</strong></td><td>Kompetensi tinggi, motivasi fluktuatif</td><td>Dukung & fasilitasi keputusan</td></tr>
+          <tr><td><strong>Delegating (S4)</strong></td><td>Kompeten & termotivasi tinggi</td><td>Serahkan penuh + pantau hasil</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-heading">Pengambilan Keputusan</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Eisenhower Matrix:</strong> Urgensi vs Kepentingan → Lakukan sekarang / Jadwalkan / Delegasikan / Buang</li>
+          <li><strong>Root Cause Analysis:</strong> 5 Whys, Fishbone Diagram</li>
+          <li><strong>Keputusan Partisipatif:</strong> Musyawarah RAT, konsensus anggota koperasi</li>
+          <li><strong>Evidence-Based:</strong> Keputusan berdasarkan data lapangan, bukan asumsi</li>
+          <li><strong>Prinsip 80/20:</strong> Fokus pada 20% masalah yang menyebabkan 80% dampak</li>
+        </ul>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-heading">Integritas & Antikorupsi</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Gratifikasi:</strong> Pemberian yang berhubungan dengan jabatan — wajib ditolak atau dilaporkan ke KPK</li>
+          <li><strong>Benturan Kepentingan:</strong> Situasi di mana kepentingan pribadi bertabrakan dengan kepentingan koperasi/anggota</li>
+          <li><strong>Whistle Blowing System:</strong> Mekanisme pelaporan pelanggaran internal secara aman dan terlindungi</li>
+          <li><strong>Transparansi Keuangan:</strong> Laporan keuangan dibuka kepada anggota setiap RAT</li>
+          <li><strong>Prinsip 4 NO:</strong> No Corruption, No Collusion, No Nepotism, No Fraud</li>
+        </ul>
+        <div class="key-points"><span class="kp red">Antikorupsi</span><span class="kp red">Gratifikasi</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Manajemen Konflik & Negosiasi
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Konflik</span><span class="acc-tag">Negosiasi</span>
+        <h4>5 Strategi Penyelesaian Konflik (Thomas-Kilmann)</h4>
+        <table>
+          <tr><th>Strategi</th><th>Kapan Digunakan</th><th>Hasil</th></tr>
+          <tr><td><strong>Kolaborasi (Collaborating)</strong></td><td>Masalah penting, semua pihak perlu puas</td><td>Win-Win — IDEAL untuk koperasi</td></tr>
+          <tr><td><strong>Kompromi (Compromising)</strong></td><td>Waktu terbatas, kepentingan setara</td><td>Partial Win-Win</td></tr>
+          <tr><td><strong>Akomodasi (Accommodating)</strong></td><td>Menjaga hubungan jangka panjang</td><td>Lose-Win (kamu양양)</td></tr>
+          <tr><td><strong>Kompetisi (Competing)</strong></td><td>Keputusan mendesak, keselamatan</td><td>Win-Lose</td></tr>
+          <tr><td><strong>Menghindar (Avoiding)</strong></td><td>Masalah tidak signifikan, pendinginan</td><td>Lose-Lose (sementara)</td></tr>
+        </table>
+        <h4>Langkah Mediasi Konflik Anggota</h4>
+        <ol>
+          <li>Dengarkan semua pihak secara terpisah terlebih dahulu</li>
+          <li>Identifikasi kepentingan di balik posisi masing-masing pihak</li>
+          <li>Temukan titik kepentingan bersama (common ground)</li>
+          <li>Usulkan opsi-opsi solusi yang objektif</li>
+          <li>Dokumentasikan kesepakatan secara tertulis</li>
+          <li>Monitor implementasi kesepakatan</li>
+        </ol>
+        <div class="highlight-box teal" style="margin-top:12px">
+          <strong>Kunci:</strong> Dalam konteks koperasi, prinsip musyawarah-mufakat (Sila ke-4 Pancasila) selalu menjadi landasan utama penyelesaian konflik. Hindari keputusan sepihak.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Orientasi Hasil & Inovasi Koperasi Desa
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Inovasi</span><span class="acc-tag">Digital</span>
+        <h4>KPI Kritis Manajer KDKMP</h4>
+        <ul>
+          <li><strong>Volume Serapan Gabah/Komoditas:</strong> Ton per bulan dari petani anggota</li>
+          <li><strong>Jumlah Anggota Aktif:</strong> Anggota yang bertransaksi ≥1x per bulan</li>
+          <li><strong>Rasio Piutang Tertagih:</strong> Persentase pinjaman yang dibayar tepat waktu</li>
+          <li><strong>Pertumbuhan SHU:</strong> YoY growth SHU koperasi</li>
+          <li><strong>Kepuasan Anggota:</strong> Survey kepuasan layanan koperasi</li>
+          <li><strong>Tingkat Distribusi Tepat Sasaran:</strong> % bantuan pangan yang tepat penerima</li>
+        </ul>
+        <h4>Digitalisasi Koperasi</h4>
+        <ul>
+          <li><strong>Sistem Pencatatan Digital:</strong> Software koperasi untuk simpan pinjam, SHU otomatis</li>
+          <li><strong>QRIS untuk Transaksi:</strong> Pembayaran simpanan dan transaksi anggota via QR</li>
+          <li><strong>Data Anggota Terintegrasi:</strong> NIK-based database anggota koperasi desa</li>
+          <li><strong>Laporan Real-Time:</strong> Dashboard kinerja koperasi yang bisa diakses pengawas</li>
+          <li><strong>Marketplace Pertanian:</strong> Platform digital jual-beli komoditas anggota</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Rumus STAR — Menjawab Soal Situasional
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Strategi Menjawab</span>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">S</div><div class="mn-word">Situation</div><div class="mn-desc">Identifikasi kondisi/konteks masalah yang ada</div></div>
+          <div class="mn-card"><div class="mn-letter">T</div><div class="mn-word">Task</div><div class="mn-desc">Apa tugas/tanggung jawab Anda dalam situasi itu?</div></div>
+          <div class="mn-card"><div class="mn-letter">A</div><div class="mn-word">Action</div><div class="mn-desc">Tindakan proaktif terbaik yang harus diambil</div></div>
+          <div class="mn-card"><div class="mn-letter">R</div><div class="mn-word">Result</div><div class="mn-desc">Hasil yang diharapkan dari tindakan tersebut</div></div>
+        </div>
+        <h4>Prinsip Memilih Jawaban TKP</h4>
+        <ul>
+          <li><strong>Prioritaskan:</strong> Proaktif > Reaktif; Kolaboratif > Individual; Berbasis data > Asumsi; Jangka panjang > Jangka pendek</li>
+          <li><strong>Hindari:</strong> Menyerahkan masalah ke atasan tanpa usaha sendiri; Mengabaikan masalah; Mengambil keputusan sepihak tanpa konsultasi; Bertindak emosional</li>
+          <li><strong>Nilai Tertinggi:</strong> Biasanya jawaban yang mencakup analisis masalah + solusi sistemik + melibatkan stakeholder</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>Pola Jawaban Teratas:</strong> Hampir selalu: Kumpulkan data/informasi dulu → Diskusikan dengan tim/pihak terkait → Ambil tindakan sistemik → Evaluasi. Jawaban yang "langsung bertindak tanpa analisis" jarang mendapat skor tertinggi.
+  </div>
+
+  <hr class="section-divider">
+  <div class="quiz-header">
+    <div class="quiz-title">Latihan Soal — Kompetensi Manajerial</div>
+    <div class="quiz-counter" id="q1-counter">0 / 10 dijawab</div>
+  </div>
+  <div id="quiz-1"></div>
+  <div class="results-panel" id="result-1">
+    <div class="result-score" id="score-1">0</div>
+    <div class="result-label">dari 10 soal benar</div>
+    <div class="result-breakdown">
+      <div class="rb-card"><div class="rb-num correct" id="correct-1">0</div><div class="rb-lab">Benar</div></div>
+      <div class="rb-card"><div class="rb-num wrong" id="wrong-1">0</div><div class="rb-lab">Salah</div></div>
+      <div class="rb-card"><div class="rb-num skip" id="skip-1">0</div><div class="rb-lab">Belum dijawab</div></div>
+    </div>
+    <button class="action-btn primary" onclick="resetQuiz(1)">Ulangi Latihan</button>
+  </div>
+</div>
+
+<!-- ═══════ TAB 2: KOPERASI & PANGAN ═══════ -->
+<div class="section-panel" id="panel-2">
+  <div class="section-header">
+    <div class="section-icon" style="background:#E1F5EE;">🌾</div>
+    <div>
+      <div class="section-title">Koperasi & Ketahanan Pangan</div>
+      <div class="section-desc">Pengetahuan teknis tentang UU Perkoperasian, manajemen SHU, distribusi pangan, dan administrasi keuangan koperasi.</div>
+      <span class="weight-badge">Materi Teknis Bidang</span>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Dasar-Dasar Perkoperasian — UU No. 25 Tahun 1992
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">UU 25/1992</span>
+        <h4>Definisi & Landasan</h4>
+        <ul>
+          <li><strong>Definisi Koperasi (Pasal 1):</strong> Badan usaha beranggotakan orang-orang atau badan hukum koperasi, berdasarkan prinsip koperasi sekaligus gerakan ekonomi rakyat berdasarkan asas kekeluargaan.</li>
+          <li><strong>Asas Koperasi:</strong> Kekeluargaan (sesuai Pasal 33 UUD 1945)</li>
+          <li><strong>Tujuan Koperasi:</strong> Memajukan kesejahteraan anggota pada khususnya dan masyarakat pada umumnya serta ikut membangun tatanan perekonomian nasional (Pasal 3)</li>
+        </ul>
+        <h4>7 Prinsip Koperasi (Pasal 5) — WAJIB HAFAL</h4>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">1</div><div class="mn-word">Keanggotaan Sukarela & Terbuka</div><div class="mn-desc">Setiap WNI dapat masuk/keluar koperasi secara sukarela</div></div>
+          <div class="mn-card"><div class="mn-letter">2</div><div class="mn-word">Pengelolaan Demokratis</div><div class="mn-desc">1 anggota = 1 suara di RAT</div></div>
+          <div class="mn-card"><div class="mn-letter">3</div><div class="mn-word">Pembagian SHU Adil</div><div class="mn-desc">Proporsional dengan kontribusi (simpanan + transaksi)</div></div>
+        </div>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">4</div><div class="mn-word">Balas Jasa Modal Terbatas</div><div class="mn-desc">Bunga atas simpanan tidak berlebihan</div></div>
+          <div class="mn-card"><div class="mn-letter">5</div><div class="mn-word">Kemandirian</div><div class="mn-desc">Koperasi mandiri, tidak bergantung pada pihak luar</div></div>
+          <div class="mn-card"><div class="mn-letter">6</div><div class="mn-word">Pendidikan Perkoperasian</div><div class="mn-desc">Anggota dididik untuk memahami koperasi</div></div>
+        </div>
+        <div class="mnemonic-row" style="justify-content:flex-start">
+          <div class="mn-card" style="max-width:200px"><div class="mn-letter">7</div><div class="mn-word">Kerja Sama Antarkoperasi</div><div class="mn-desc">Koperasi bisa bermitra dengan koperasi lain</div></div>
+        </div>
+        <h4>Perangkat Organisasi Koperasi</h4>
+        <table>
+          <tr><th>Perangkat</th><th>Fungsi Utama</th><th>Keterangan</th></tr>
+          <tr><td><strong>Rapat Anggota</strong></td><td>Kekuasaan tertinggi</td><td>Memutuskan AD/ART, program kerja, SHU</td></tr>
+          <tr><td><strong>Pengurus</strong></td><td>Eksekutif koperasi</td><td>Ketua, Sekretaris, Bendahara — dipilih RAT</td></tr>
+          <tr><td><strong>Pengawas</strong></td><td>Kontrol internal</td><td>Mengawasi pengurus, audit internal</td></tr>
+          <tr><td><strong>Manajer/Pengelola</strong></td><td>Operasional harian</td><td>Diangkat pengurus, bukan pengurus</td></tr>
+        </table>
+        <h4>Jenis-Jenis Koperasi</h4>
+        <ul>
+          <li><strong>Koperasi Produsen:</strong> Anggotanya adalah produsen (petani, nelayan) yang bersama-sama menghasilkan dan memasarkan produk. Contoh: Koperasi petani padi.</li>
+          <li><strong>Koperasi Konsumen:</strong> Menyediakan kebutuhan sehari-hari anggota. Contoh: Koperasi sembako desa.</li>
+          <li><strong>Koperasi Simpan Pinjam (KSP):</strong> Menghimpun simpanan dan memberikan pinjaman kepada anggota.</li>
+          <li><strong>Koperasi Pemasaran:</strong> Memasarkan hasil produksi anggota secara bersama.</li>
+          <li><strong>Koperasi Jasa:</strong> Memberikan jasa tertentu kepada anggota (transportasi, jasa pengolahan).</li>
+          <li><strong>KDKMP:</strong> Termasuk koperasi multifungsi — menggabungkan fungsi produsen, konsumen, dan simpan pinjam.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Sisa Hasil Usaha (SHU) — Rumus, Komponen & Contoh Soal
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">SHU</span><span class="acc-tag amber">Hitung Cepat</span>
+        <h4>Definisi SHU (Pasal 45 UU 25/1992)</h4>
+        <p>SHU adalah pendapatan koperasi dalam satu tahun buku dikurangi biaya, penyusutan, dan kewajiban lainnya termasuk pajak dalam tahun buku yang bersangkutan.</p>
+        <div class="formula-box">
+SHU = Pendapatan - (Biaya Operasional + Penyusutan + Pajak)
+<br>
+<span class="comment">≈ Keuntungan bersih koperasi per tahun</span>
+        </div>
+        <h4>Komponen Pembagian SHU (dari AD/ART)</h4>
+        <table>
+          <tr><th>Komponen</th><th>Besaran Umum</th><th>Keterangan</th></tr>
+          <tr><td>Dana Cadangan</td><td>25–30%</td><td>Tidak dibagikan, untuk pengembangan koperasi</td></tr>
+          <tr><td>Jasa Anggota</td><td>30–40%</td><td>Dibagi ke anggota: jasa simpanan + jasa usaha</td></tr>
+          <tr><td>Dana Pengurus & Pengawas</td><td>5–10%</td><td>Honorarium pengurus</td></tr>
+          <tr><td>Dana Pendidikan</td><td>5%</td><td>Untuk pelatihan anggota dan staf</td></tr>
+          <tr><td>Dana Sosial</td><td>5%</td><td>Kegiatan sosial kemasyarakatan</td></tr>
+          <tr><td>Dana Pembangunan Daerah</td><td>5%</td><td>Kontribusi untuk daerah kerja koperasi</td></tr>
+        </table>
+        <h4>Rumus SHU Per Anggota — WAJIB HAFAL</h4>
+        <div class="formula-box">
+SHU Anggota = Jasa Modal + Jasa Usaha
+<br><br>
+Jasa Modal   = (Simpanan Anggota ÷ Total Simpanan) × Dana Jasa Modal
+<br>
+Jasa Usaha   = (Transaksi Anggota ÷ Total Transaksi) × Dana Jasa Usaha
+        </div>
+        <h4>Contoh Lengkap</h4>
+        <div class="highlight-box teal">
+          <strong>Soal:</strong> SHU koperasi Rp 200 juta. 40% untuk jasa anggota (dibagi rata antara jasa modal dan jasa usaha). Total simpanan koperasi Rp 100 juta, simpanan Bu Sari Rp 10 juta. Total transaksi koperasi Rp 500 juta, transaksi Bu Sari Rp 25 juta. Berapa SHU Bu Sari?
+          <br><br>
+          <strong>Jawab:</strong><br>
+          Dana jasa anggota = 40% × Rp 200 juta = <strong>Rp 80 juta</strong><br>
+          → Jasa modal = Rp 40 juta; Jasa usaha = Rp 40 juta<br><br>
+          Jasa modal Bu Sari = (10/100) × Rp 40 juta = <strong>Rp 4 juta</strong><br>
+          Jasa usaha Bu Sari = (25/500) × Rp 40 juta = <strong>Rp 2 juta</strong><br>
+          <strong>Total SHU Bu Sari = Rp 6 juta</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Administrasi Keuangan Koperasi
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Keuangan</span>
+        <h4>Modal Koperasi</h4>
+        <table>
+          <tr><th>Sumber Modal</th><th>Jenis</th><th>Keterangan</th></tr>
+          <tr><td>Simpanan Pokok</td><td>Modal Sendiri</td><td>Dibayar 1x saat masuk, tidak bisa diambil selama jadi anggota, besarnya sama semua anggota</td></tr>
+          <tr><td>Simpanan Wajib</td><td>Modal Sendiri</td><td>Dibayar periodik (bulanan), jumlah ditetapkan RAT</td></tr>
+          <tr><td>Dana Cadangan</td><td>Modal Sendiri</td><td>Dari SHU yang tidak dibagikan, untuk keadaan darurat</td></tr>
+          <tr><td>Hibah/Donasi</td><td>Modal Sendiri</td><td>Dari pemerintah atau donatur</td></tr>
+          <tr><td>Pinjaman Bank</td><td>Modal Pinjaman</td><td>KUR (Kredit Usaha Rakyat), kredit koperasi</td></tr>
+          <tr><td>Simpanan Sukarela</td><td>Modal Pinjaman</td><td>Bisa diambil kapan saja, ada bunga</td></tr>
+        </table>
+        <h4>Laporan Keuangan Koperasi</h4>
+        <ul>
+          <li><strong>Neraca (Balance Sheet):</strong> Posisi Aset = Kewajiban + Ekuitas (Modal Anggota) pada tanggal tertentu</li>
+          <li><strong>Laporan SHU:</strong> Pendapatan - Beban = SHU bersih selama satu tahun</li>
+          <li><strong>Laporan Arus Kas:</strong> Aliran masuk dan keluar kas (operasi, investasi, pendanaan)</li>
+          <li><strong>Catatan atas Laporan Keuangan:</strong> Penjelasan detail pos-pos laporan keuangan</li>
+        </ul>
+        <h4>Rasio Keuangan Dasar Koperasi</h4>
+        <div class="formula-box">
+Current Ratio (Likuiditas) = Aset Lancar ÷ Utang Lancar
+<span class="comment">→ Minimal 1.0x (idealnya &gt;1.5x)</span>
+<br>
+Debt to Asset Ratio       = Total Utang ÷ Total Aset × 100%
+<span class="comment">→ Idealnya &lt;60% (makin rendah makin sehat)</span>
+<br>
+Return on Assets (ROA)    = SHU Bersih ÷ Total Aset × 100%
+<span class="comment">→ Makin tinggi makin efisien menggunakan aset</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Ketahanan Pangan Nasional & Peran KDKMP
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag teal">Ketahanan Pangan</span>
+        <h4>UU Pangan No. 18 Tahun 2012</h4>
+        <ul>
+          <li><strong>Ketahanan Pangan:</strong> Kondisi terpenuhinya pangan bagi negara sampai perseorangan — dari ketersediaan, keterjangkauan, mutu, gizi, keamanan, dan keberagaman</li>
+          <li><strong>Kemandirian Pangan:</strong> Kemampuan negara memenuhi pangan dari produksi dalam negeri</li>
+          <li><strong>Kedaulatan Pangan:</strong> Hak negara untuk menentukan kebijakan pangan sendiri</li>
+        </ul>
+        <h4>3 Pilar Ketahanan Pangan (FAO)</h4>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">A</div><div class="mn-word">Availability</div><div class="mn-desc">Pangan tersedia dalam jumlah cukup di seluruh wilayah</div></div>
+          <div class="mn-card"><div class="mn-letter">A</div><div class="mn-word">Access</div><div class="mn-desc">Masyarakat mampu mengakses dan membeli pangan</div></div>
+          <div class="mn-card"><div class="mn-letter">U</div><div class="mn-word">Utilization</div><div class="mn-desc">Pangan dimanfaatkan dengan baik untuk nutrisi optimal</div></div>
+        </div>
+        <h4>Peran Strategis KDKMP</h4>
+        <table>
+          <tr><th>Fungsi</th><th>Implementasi di Desa</th></tr>
+          <tr><td>Agregator Pangan</td><td>Membeli gabah/jagung petani anggota dengan harga fair, mengumpulkan di gudang koperasi</td></tr>
+          <tr><td>Penyedia Input</td><td>Mendistribusikan benih, pupuk, pestisida bersubsidi kepada petani anggota</td></tr>
+          <tr><td>Akses Pasar</td><td>Menghubungkan petani dengan Bulog, supermarket, dan eksportir sebagai offtaker</td></tr>
+          <tr><td>Simpan Pinjam</td><td>Memberikan kredit modal usaha tani dengan bunga terjangkau</td></tr>
+          <tr><td>Distribusi Pangan</td><td>Menjamin ketersediaan bahan pokok di desa (beras, gula, minyak)</td></tr>
+          <tr><td>Stabilisasi Harga</td><td>Buffer stock untuk mencegah lonjakan harga pangan lokal</td></tr>
+        </table>
+        <h4>Hubungan Agrinas–Bulog–KDKMP</h4>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Petani Anggota KDKMP</div><div class="tl-desc">Menanam padi/jagung/kedelai → menjual ke koperasi dengan harga yang disepakati (≥HPP)</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">KDKMP (Koperasi Desa)</div><div class="tl-desc">Mengumpulkan, menimbang, menyimpan, dan memproses gabah. Menjadi mitra resmi Bulog dan Agrinas</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">PT Agrinas Pangan Nusantara</div><div class="tl-desc">Menghimpun komoditas dari ribuan KDKMP, mendistribusikan ke jalur komersial dan program pemerintah</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Bulog / Pasar Nasional</div><div class="tl-desc">Menerima pasokan untuk cadangan beras pemerintah (CBP) dan distribusi program bantuan pangan nasional</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Rapat Anggota Tahunan (RAT) — Prosedur & Materi
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">RAT</span>
+        <h4>Kewenangan Rapat Anggota (Pasal 23 UU 25/1992)</h4>
+        <ul>
+          <li>Menetapkan Anggaran Dasar (AD) dan Anggaran Rumah Tangga (ART)</li>
+          <li>Memilih, mengangkat, dan memberhentikan pengurus dan pengawas</li>
+          <li>Menetapkan rencana kerja, RAPB (Rencana Anggaran Pendapatan dan Belanja), dan kebijakan umum</li>
+          <li>Mengesahkan laporan pertanggungjawaban pengurus dan pengawas</li>
+          <li>Menetapkan pembagian SHU</li>
+          <li>Keputusan tentang penggabungan, peleburan, pembagian, dan pembubaran koperasi</li>
+        </ul>
+        <h4>Ketentuan Kuorum RAT</h4>
+        <ul>
+          <li>RAT sah jika dihadiri lebih dari ½ jumlah anggota koperasi</li>
+          <li>Keputusan sah jika disetujui lebih dari ½ suara yang hadir (kecuali AD/ART: 2/3 suara)</li>
+          <li>Jika tidak kuorum → RAT kedua paling cepat 7 hari kemudian, berlaku dengan kehadiran berapa pun</li>
+        </ul>
+        <div class="highlight-box">
+          <strong>Tip:</strong> Manajer BUKAN pengurus koperasi — manajer diangkat oleh pengurus untuk mengelola operasional sehari-hari. Manajer tidak memiliki hak suara di RAT (kecuali jika juga anggota koperasi).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+  <div class="quiz-header">
+    <div class="quiz-title">Latihan Soal — Koperasi & Pangan</div>
+    <div class="quiz-counter" id="q2-counter">0 / 10 dijawab</div>
+  </div>
+  <div id="quiz-2"></div>
+  <div class="results-panel" id="result-2">
+    <div class="result-score" id="score-2">0</div>
+    <div class="result-label">dari 10 soal benar</div>
+    <div class="result-breakdown">
+      <div class="rb-card"><div class="rb-num correct" id="correct-2">0</div><div class="rb-lab">Benar</div></div>
+      <div class="rb-card"><div class="rb-num wrong" id="wrong-2">0</div><div class="rb-lab">Salah</div></div>
+      <div class="rb-card"><div class="rb-num skip" id="skip-2">0</div><div class="rb-lab">Belum dijawab</div></div>
+    </div>
+    <button class="action-btn primary" onclick="resetQuiz(2)">Ulangi Latihan</button>
+  </div>
+</div>
+
+<!-- ═══════ TAB 3: TIU ═══════ -->
+<div class="section-panel" id="panel-3">
+  <div class="section-header">
+    <div class="section-icon" style="background:#FAEEDA;">🧠</div>
+    <div>
+      <div class="section-title">Tes Intelegensia Umum (TIU)</div>
+      <div class="section-desc">Mengukur kemampuan kognitif: verbal (analogi, silogisme), numerik (deret, persentase), dan penalaran logis.</div>
+      <span class="weight-badge" style="background:#FAEEDA;color:#854F0B;border-color:#FAC775;">Kemampuan Kognitif</span>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="content-card">
+      <div class="card-heading">Kemampuan Verbal</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Analogi:</strong> A : B = C : ? — temukan hubungan logis antara pasangan kata</li>
+          <li><strong>Silogisme:</strong> Premis mayor + premis minor → kesimpulan yang valid</li>
+          <li><strong>Antonim/Sinonim:</strong> Perbendaharaan kata umum dan istilah pemerintahan</li>
+          <li><strong>Pemahaman Bacaan:</strong> Ide pokok, inferensi, kesimpulan dari paragraf singkat</li>
+        </ul>
+        <div class="key-points"><span class="kp">Analogi</span><span class="kp">Silogisme</span><span class="kp">Inferensi</span></div>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="card-heading">Kemampuan Numerik</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Deret Angka:</strong> Pola aritmatika (+/−), geometri (×/÷), kuadrat, kombinasi</li>
+          <li><strong>Persentase & Rasio:</strong> Keuntungan, diskon, pertumbuhan, campuran</li>
+          <li><strong>Soal Cerita:</strong> Kecepatan/jarak/waktu; bunga simpan pinjam</li>
+          <li><strong>Operasi Dasar:</strong> Hitung cepat tanpa kalkulator — estimasi bilangan</li>
+        </ul>
+        <div class="key-points"><span class="kp amber">Deret</span><span class="kp amber">Persentase</span><span class="kp amber">Rasio</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Panduan Lengkap Analogi Verbal
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Verbal</span>
+        <h4>Pola Hubungan Analogi yang Sering Muncul</h4>
+        <table>
+          <tr><th>Pola</th><th>Contoh</th></tr>
+          <tr><td>Bagian → Keseluruhan</td><td>DAUN : POHON = JARI : TANGAN</td></tr>
+          <tr><td>Alat → Fungsi</td><td>PISAU : MEMOTONG = KUAS : MELUKIS</td></tr>
+          <tr><td>Profesi → Tempat Kerja</td><td>DOKTER : RUMAH SAKIT = PETANI : SAWAH</td></tr>
+          <tr><td>Bahan → Produk</td><td>KAPAS : BENANG = BENANG : KAIN</td></tr>
+          <tr><td>Sinonim</td><td>BERANI : GAGAH = TAKUT : GENTAR</td></tr>
+          <tr><td>Antonim</td><td>PANAS : DINGIN = SIANG : MALAM</td></tr>
+          <tr><td>Sebab → Akibat</td><td>KEKERINGAN : GAGAL PANEN = BANJIR : TANAH LONGSOR</td></tr>
+          <tr><td>Kategori → Anggota</td><td>KOPERASI : SHU = PERUSAHAAN : DIVIDEN</td></tr>
+          <tr><td>Profesi → Produk</td><td>NELAYAN : IKAN = PETANI : GABAH</td></tr>
+        </table>
+        <h4>Strategi Menjawab Analogi</h4>
+        <ol>
+          <li>Buat kalimat hubungan: "A adalah [hubungan] dari B"</li>
+          <li>Terapkan kalimat yang sama ke pilihan C : ?</li>
+          <li>Perhatikan urutan — A:B ≠ B:A</li>
+          <li>Jika ada dua yang mirip, pilih yang PALING SPESIFIK</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Silogisme & Penalaran Logis
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Logika</span>
+        <h4>Jenis-Jenis Silogisme</h4>
+        <table>
+          <tr><th>Tipe</th><th>Struktur</th><th>Valid?</th></tr>
+          <tr><td>Modus Ponens</td><td>Jika P maka Q. P benar. → Q benar</td><td class="good">✓ Valid</td></tr>
+          <tr><td>Modus Tollens</td><td>Jika P maka Q. Q salah. → P salah</td><td class="good">✓ Valid</td></tr>
+          <tr><td>Silogisme Hipotesis</td><td>Jika P→Q dan Q→R. → Jika P maka R</td><td class="good">✓ Valid</td></tr>
+          <tr><td>Penyangkalan P</td><td>Jika P maka Q. P salah. → Q ???</td><td class="bad">✗ Tidak Valid</td></tr>
+          <tr><td>Penegasan Q</td><td>Jika P maka Q. Q benar. → P ???</td><td class="bad">✗ Tidak Valid</td></tr>
+        </table>
+        <h4>Kuantor (Quantifier)</h4>
+        <ul>
+          <li><strong>"Semua A adalah B":</strong> Jika X adalah A, maka X pasti B</li>
+          <li><strong>"Beberapa A adalah B":</strong> Tidak bisa menyimpulkan X adalah B hanya karena X adalah A</li>
+          <li><strong>"Tidak ada A adalah B":</strong> Jika X adalah A, maka X pasti bukan B</li>
+        </ul>
+        <div class="highlight-box amber">
+          <strong>Trik:</strong> Jika kesimpulan berisi kata "mungkin" atau "bisa jadi" — biasanya SALAH jika premisnya pasti. Jika premis sudah pasti (semua, tidak ada), kesimpulan harus pasti juga.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Deret Angka — Pola & Strategi
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag amber">Numerik</span>
+        <h4>Jenis Pola Deret</h4>
+        <table>
+          <tr><th>Pola</th><th>Contoh</th><th>Cara Identifikasi</th></tr>
+          <tr><td>Aritmatika (tambah/kurang)</td><td>2, 5, 8, 11, 14...</td><td>Beda antar suku konstan</td></tr>
+          <tr><td>Geometri (kali/bagi)</td><td>3, 6, 12, 24, 48...</td><td>Rasio antar suku konstan</td></tr>
+          <tr><td>Kuadrat</td><td>1, 4, 9, 16, 25...</td><td>Suku = n²</td></tr>
+          <tr><td>Beda ke-2 konstan</td><td>2, 5, 10, 17, 26...</td><td>Hitung beda-beda antar suku, lalu beda dari beda</td></tr>
+          <tr><td>Dua pola bergantian</td><td>1, 2, 3, 4, 5, 8, 7, 16...</td><td>Pisah suku ganjil dan genap</td></tr>
+          <tr><td>Fibonacci-like</td><td>1, 1, 2, 3, 5, 8, 13...</td><td>Suku = jumlah dua suku sebelumnya</td></tr>
+        </table>
+        <h4>Langkah Sistematis</h4>
+        <ol>
+          <li>Hitung selisih (beda) antar suku berurutan</li>
+          <li>Jika beda konstan → aritmatika → selesai</li>
+          <li>Jika beda tidak konstan → hitung beda dari beda (beda ke-2)</li>
+          <li>Jika beda ke-2 konstan → polinomial derajat 2</li>
+          <li>Coba rasio (bagi) jika beda tidak teratur</li>
+          <li>Jika masih tidak ketemu → dua pola bergantian</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box amber">
+    <strong>Tips Soal Numerik Konteks Koperasi:</strong> "SHU koperasi Rp 120 juta. 40% untuk jasa anggota. Pak Budi bertransaksi 15% dari total transaksi. Berapa SHU Pak Budi dari jasa usaha?" → Jasa anggota = 40% × 120 juta = 48 juta. SHU Pak Budi = 15% × 48 juta = <strong>Rp 7,2 juta</strong>. Latih kalkulasi persentase berlapis!
+  </div>
+
+  <hr class="section-divider">
+  <div class="quiz-header">
+    <div class="quiz-title">Latihan Soal — TIU</div>
+    <div class="quiz-counter" id="q3-counter">0 / 12 dijawab</div>
+  </div>
+  <div id="quiz-3"></div>
+  <div class="results-panel" id="result-3">
+    <div class="result-score" id="score-3">0</div>
+    <div class="result-label">dari 12 soal benar</div>
+    <div class="result-breakdown">
+      <div class="rb-card"><div class="rb-num correct" id="correct-3">0</div><div class="rb-lab">Benar</div></div>
+      <div class="rb-card"><div class="rb-num wrong" id="wrong-3">0</div><div class="rb-lab">Salah</div></div>
+      <div class="rb-card"><div class="rb-num skip" id="skip-3">0</div><div class="rb-lab">Belum dijawab</div></div>
+    </div>
+    <button class="action-btn primary" onclick="resetQuiz(3)">Ulangi Latihan</button>
+  </div>
+</div>
+
+<!-- ═══════ TAB 4: WAWASAN KEBANGSAAN ═══════ -->
+<div class="section-panel" id="panel-4">
+  <div class="section-header">
+    <div class="section-icon" style="background:#E1F5EE;">🇮🇩</div>
+    <div>
+      <div class="section-title">Wawasan Kebangsaan & Bela Negara</div>
+      <div class="section-desc">Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika, dan keterkaitan ketahanan ekonomi desa dengan pertahanan negara.</div>
+      <span class="weight-badge" style="background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5;">TWK</span>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Pancasila — Sila, Nilai & Implementasi
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag teal">Pancasila</span>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">1</div><div class="mn-word">Ketuhanan Yang Maha Esa</div><div class="mn-desc">Toleransi antaragama, kebebasan beribadah sesuai agama masing-masing</div></div>
+          <div class="mn-card"><div class="mn-letter">2</div><div class="mn-word">Kemanusiaan yang Adil & Beradab</div><div class="mn-desc">HAM, perlakuan manusiawi, kesetaraan, solidaritas</div></div>
+          <div class="mn-card"><div class="mn-letter">3</div><div class="mn-word">Persatuan Indonesia</div><div class="mn-desc">NKRI, wawasan nusantara, cinta tanah air</div></div>
+        </div>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">4</div><div class="mn-word">Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan</div><div class="mn-desc">Musyawarah-mufakat, demokrasi, perwakilan, RAT koperasi</div></div>
+          <div class="mn-card"><div class="mn-letter">5</div><div class="mn-word">Keadilan Sosial bagi Seluruh Rakyat Indonesia</div><div class="mn-desc">Pemerataan, SHU proporsional, ketahanan pangan untuk semua</div></div>
+        </div>
+        <h4>Implementasi Pancasila dalam Koperasi</h4>
+        <table>
+          <tr><th>Sila</th><th>Implementasi di Koperasi KDKMP</th></tr>
+          <tr><td>Sila 1</td><td>Hormati keberagaman agama anggota; tidak diskriminasi dalam pembagian SHU/bantuan</td></tr>
+          <tr><td>Sila 2</td><td>Perlakukan semua anggota secara adil; tidak ada diskriminasi dalam layanan</td></tr>
+          <tr><td>Sila 3</td><td>Koperasi sebagai pemersatu petani lintas suku/daerah dalam satu misi ketahanan pangan</td></tr>
+          <tr><td>Sila 4</td><td>RAT sebagai bentuk demokrasi ekonomi; musyawarah dalam setiap keputusan besar</td></tr>
+          <tr><td>Sila 5</td><td>SHU yang proporsional; akses input dan modal yang merata bagi seluruh anggota</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      UUD 1945 — Pasal-Pasal Kritis
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag teal">UUD 1945</span>
+        <table>
+          <tr><th>Pasal</th><th>Isi</th><th>Relevansi</th></tr>
+          <tr><td><strong>Pasal 27 (2)</strong></td><td>Tiap WNI berhak atas pekerjaan dan penghidupan yang layak</td><td>Hak ekonomi anggota koperasi</td></tr>
+          <tr><td><strong>Pasal 30</strong></td><td>Hak & kewajiban WNI dalam pertahanan & keamanan negara</td><td>Bela negara, termasuk melalui koperasi pangan</td></tr>
+          <tr><td><strong>Pasal 33 (1)</strong></td><td>Perekonomian disusun sebagai usaha bersama berdasarkan asas kekeluargaan</td><td><em>Landasan konstitusional koperasi</em></td></tr>
+          <tr><td><strong>Pasal 33 (2)</strong></td><td>Cabang produksi penting dikuasai negara</td><td>Pangan sebagai komoditas strategis negara</td></tr>
+          <tr><td><strong>Pasal 33 (3)</strong></td><td>Bumi, air, kekayaan alam dikuasai negara untuk kemakmuran rakyat</td><td>SDA pertanian dikelola untuk kesejahteraan</td></tr>
+          <tr><td><strong>Pasal 34</strong></td><td>Fakir miskin dan anak terlantar dipelihara negara</td><td>Program bantuan pangan untuk kelompok rentan</td></tr>
+        </table>
+        <h4>Pembukaan UUD 1945 — 4 Tujuan Negara (Alinea 4)</h4>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">1</div><div class="mn-word">Melindungi segenap bangsa & tumpah darah</div><div class="mn-desc">Pertahanan dan keamanan wilayah NKRI</div></div>
+          <div class="mn-card"><div class="mn-letter">2</div><div class="mn-word">Memajukan kesejahteraan umum</div><div class="mn-desc">Ekonomi rakyat, koperasi, ketahanan pangan</div></div>
+          <div class="mn-card"><div class="mn-letter">3</div><div class="mn-word">Mencerdaskan kehidupan bangsa</div><div class="mn-desc">Pendidikan, pelatihan anggota koperasi</div></div>
+          <div class="mn-card"><div class="mn-letter">4</div><div class="mn-word">Ikut melaksanakan ketertiban dunia</div><div class="mn-desc">Kerjasama internasional, perdamaian</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Bela Negara & Ketahanan Nasional
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">Bela Negara</span><span class="acc-tag">UU 3/2002</span>
+        <h4>Bela Negara (UU No. 3 Tahun 2002 tentang Pertahanan Negara)</h4>
+        <ul>
+          <li><strong>Definisi:</strong> Sikap dan perilaku WNI yang dijiwai kecintaan kepada NKRI berdasarkan Pancasila dan UUD 1945 untuk menjamin kelangsungan hidup bangsa</li>
+          <li><strong>Dimensi Militer:</strong> TNI, komponen cadangan, komponen pendukung</li>
+          <li><strong>Dimensi Non-Militer:</strong> Semua WNI sesuai profesi masing-masing — termasuk manajer koperasi pangan!</li>
+        </ul>
+        <h4>5 Nilai Dasar Bela Negara</h4>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">1</div><div class="mn-word">Cinta Tanah Air</div><div class="mn-desc">Bangga produk lokal, dukung pertanian domestik</div></div>
+          <div class="mn-card"><div class="mn-letter">2</div><div class="mn-word">Sadar Berbangsa & Bernegara</div><div class="mn-desc">Taat hukum, aktif berpartisipasi dalam pembangunan</div></div>
+          <div class="mn-card"><div class="mn-letter">3</div><div class="mn-word">Yakin pada Pancasila</div><div class="mn-desc">Menerapkan nilai Pancasila dalam kerja koperasi</div></div>
+        </div>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">4</div><div class="mn-word">Rela Berkorban</div><div class="mn-desc">Mengutamakan kepentingan anggota koperasi di atas kepentingan pribadi</div></div>
+          <div class="mn-card"><div class="mn-letter">5</div><div class="mn-word">Memiliki Kemampuan Bela Negara</div><div class="mn-desc">Profesional di bidang pangan = memperkuat kedaulatan ekonomi</div></div>
+        </div>
+        <h4>8 Gatra Ketahanan Nasional</h4>
+        <table>
+          <tr><th>Gatra</th><th>Kontribusi Koperasi KDKMP</th></tr>
+          <tr><td>Geografi</td><td>Distribusi pangan merata ke seluruh pelosok desa</td></tr>
+          <tr><td>Demografi</td><td>Meningkatkan kesejahteraan petani dan keluarganya</td></tr>
+          <tr><td>SDA</td><td>Optimalisasi lahan pertanian anggota koperasi</td></tr>
+          <tr><td>Ideologi</td><td>Koperasi sbg wujud nyata ekonomi Pancasila</td></tr>
+          <tr><td><strong>Ekonomi</strong></td><td><strong>Utama — memperkuat ketahanan pangan dan kemandirian ekonomi desa</strong></td></tr>
+          <tr><td>Sosial Budaya</td><td>Mempererat hubungan sosial petani di desa</td></tr>
+          <tr><td>Hankam</td><td>Ketahanan pangan = fondasi pertahanan negara</td></tr>
+          <tr><td>Politik</td><td>Demokrasi ekonomi melalui RAT dan musyawarah</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      Otonomi Daerah, UU Desa & ANEKA
+      <span class="acc-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <span class="acc-tag">UU 6/2014</span><span class="acc-tag">ANEKA</span>
+        <h4>UU Desa No. 6 Tahun 2014</h4>
+        <ul>
+          <li><strong>Kewenangan Desa:</strong> Desa memiliki kewenangan mengatur & mengurus urusan pemerintahan dan kepentingan masyarakat berdasarkan prakarsa, hak asal-usul, dan adat istiadat setempat</li>
+          <li><strong>Dana Desa:</strong> Dialokasikan dari APBN, dapat digunakan untuk pengembangan BUMDes, koperasi, dan infrastruktur pertanian</li>
+          <li><strong>BUMDes vs Koperasi Desa:</strong>
+            <ul>
+              <li>BUMDes: Milik pemerintah desa, didirikan berdasarkan musyawarah desa, modal dari APBD Desa</li>
+              <li>Koperasi Desa (KDKMP): Milik anggota (warga), prinsip kekeluargaan, modal dari simpanan anggota</li>
+              <li>Keduanya bisa bermitra dan bersinergi dalam program ketahanan pangan desa</li>
+            </ul>
+          </li>
+        </ul>
+        <h4>Nilai ANEKA — 5 Nilai Dasar ASN</h4>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">A</div><div class="mn-word">Akuntabilitas</div><div class="mn-desc">Bertanggung jawab atas setiap keputusan dan penggunaan sumber daya koperasi</div></div>
+          <div class="mn-card"><div class="mn-letter">N</div><div class="mn-word">Nasionalisme</div><div class="mn-desc">Mengutamakan kepentingan nasional (ketahanan pangan) di atas kepentingan pribadi</div></div>
+          <div class="mn-card"><div class="mn-letter">E</div><div class="mn-word">Etika Publik</div><div class="mn-desc">Sopan, jujur, dan menjaga integritas dalam setiap interaksi dengan anggota dan mitra</div></div>
+        </div>
+        <div class="mnemonic-row">
+          <div class="mn-card"><div class="mn-letter">K</div><div class="mn-word">Komitmen Mutu</div><div class="mn-desc">Terus meningkatkan kualitas layanan koperasi, efisien dan inovatif</div></div>
+          <div class="mn-card"><div class="mn-letter">A</div><div class="mn-word">Antikorupsi</div><div class="mn-desc">Tidak menerima gratifikasi, transparan keuangan, laporkan pelanggaran</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+  <div class="quiz-header">
+    <div class="quiz-title">Latihan Soal — Wawasan Kebangsaan</div>
+    <div class="quiz-counter" id="q4-counter">0 / 10 dijawab</div>
+  </div>
+  <div id="quiz-4"></div>
+  <div class="results-panel" id="result-4">
+    <div class="result-score" id="score-4">0</div>
+    <div class="result-label">dari 10 soal benar</div>
+    <div class="result-breakdown">
+      <div class="rb-card"><div class="rb-num correct" id="correct-4">0</div><div class="rb-lab">Benar</div></div>
+      <div class="rb-card"><div class="rb-num wrong" id="wrong-4">0</div><div class="rb-lab">Salah</div></div>
+      <div class="rb-card"><div class="rb-num skip" id="skip-4">0</div><div class="rb-lab">Belum dijawab</div></div>
+    </div>
+    <button class="action-btn primary" onclick="resetQuiz(4)">Ulangi Latihan</button>
+  </div>
+</div>
+
+<!-- ═══════ TAB 5: TIPS ═══════ -->
+<div class="section-panel" id="panel-5">
+  <div class="section-header">
+    <div class="section-icon" style="background:#FAEEDA;">✅</div>
+    <div>
+      <div class="section-title">Tips & Strategi Tes CAT</div>
+      <div class="section-desc">Panduan teknis dan strategi hari-H untuk memaksimalkan performa dalam tes seleksi berbasis komputer.</div>
+    </div>
+  </div>
+
+  <div class="highlight-box amber">
+    <strong>ACTION SEKARANG:</strong> Cetak Kartu Ujian di <strong>phtc.panselnas.go.id</strong> hari ini juga. Pastikan kamu tahu lokasi tes dan estimasi perjalanan.
+  </div>
+
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">⏱️</div><div class="tip-title">Manajemen Waktu</div><div class="tip-text">Alokasikan ~1–1,5 menit per soal. Jika soal sulit, skip dan tandai. Kerjakan soal mudah dulu, kembali ke yang sulit di akhir sesi.</div></div>
+    <div class="tip-card"><div class="tip-icon">📱</div><div class="tip-title">Latihan dengan Timer</div><div class="tip-text">Gunakan app simulasi CAT BKN, Gojek BUMN, atau Zenius. Fokus pada kondisi waktu nyata — latihan tanpa timer tidak efektif.</div></div>
+    <div class="tip-card"><div class="tip-icon">🎯</div><div class="tip-title">Strategi TKP</div><div class="tip-text">Pilih yang paling proaktif, kolaboratif, berbasis data. Hindari jawaban yang reaktif, individual, atau menghindar dari masalah.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔢</div><div class="tip-title">Numerik Cepat</div><div class="tip-text">Latih estimasi: 10% = geser koma, 5% = setengahnya, 25% = bagi 4. Untuk deret: cari beda pertama lalu beda kedua.</div></div>
+    <div class="tip-card"><div class="tip-icon">📖</div><div class="tip-title">Prioritas Materi</div><div class="tip-text">UU 25/1992, rumus SHU, Pasal 33 UUD 1945, 5 Sila Pancasila, 7 Prinsip Koperasi, ANEKA, kepemimpinan situasional.</div></div>
+    <div class="tip-card"><div class="tip-icon">🌙</div><div class="tip-title">H-1 Tes</div><div class="tip-text">Tidak perlu belajar keras. Tidur 7–8 jam. Siapkan kartu ujian + KTP. Sarapan bergizi. Tiba 30 menit lebih awal.</div></div>
+  </div>
+
+  <hr class="section-divider">
+
+  <div class="content-card" style="margin-bottom:16px">
+    <div class="card-heading">Ringkasan Angka Penting — Wajib Hafal</div>
+    <div class="card-body">
+      <table>
+        <tr><th>Regulasi</th><th>Tentang</th><th>Poin Kritis</th></tr>
+        <tr><td>UU 25/1992</td><td>Perkoperasian</td><td>7 Prinsip Koperasi, SHU, RAT, Pengurus vs Manajer</td></tr>
+        <tr><td>UU 18/2012</td><td>Pangan</td><td>3 pilar ketahanan pangan, kedaulatan, kemandirian</td></tr>
+        <tr><td>UU 3/2002</td><td>Pertahanan Negara</td><td>Bela negara militer & non-militer, 5 nilai dasar</td></tr>
+        <tr><td>UU 6/2014</td><td>Desa</td><td>Dana Desa, BUMDes, otonomi desa, musyawarah</td></tr>
+        <tr><td>Pasal 33 UUD</td><td>Ekonomi kerakyatan</td><td>Asas kekeluargaan = landasan koperasi</td></tr>
+        <tr><td>Pasal 30 UUD</td><td>Bela negara</td><td>Hak & kewajiban setiap WNI</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="card-heading">Checklist Persiapan Akhir</div>
+    <div class="card-body"><div id="checklist-wrap"></div></div>
+  </div>
+</div>
+
+<p class="footer-note">Modul CAT — Manajer KDKMP Agrinas · Dibuat untuk persiapan Seleksi Kompetensi · Semua soal bersifat latihan, bukan soal resmi · 2025</p>
+</main>
+</div><!-- /app -->
+
+<script>
+// ═══ PAYWALL ═══
+function checkAccess() {
+  try {
+    return localStorage.getItem('kdkmp_access') === 'granted';
+  } catch(e) { return false; }
+}
+
+function confirmPayment() {
+  const btn = document.getElementById('btnConfirm');
+  const overlay = document.getElementById('verifOverlay');
+  btn.disabled = true;
+  overlay.classList.add('show');
+  setTimeout(() => {
+    try { localStorage.setItem('kdkmp_access', 'granted'); } catch(e) {}
+    document.getElementById('paywall').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    renderQuiz(1); renderQuiz(2); renderQuiz(3); renderQuiz(4); renderChecklist();
+  }, 2800);
+}
+
+if (checkAccess()) {
+  document.getElementById('paywall').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  setTimeout(() => { renderQuiz(1); renderQuiz(2); renderQuiz(3); renderQuiz(4); renderChecklist(); }, 100);
+}
+
+// ═══ QUIZ DATA ═══
+const quizData = {
+  1: [
+    { q:"Sebagai Manajer KDKMP baru, Anda menemukan staf gudang sering terlambat hingga mengganggu distribusi pangan. Tindakan terbaik adalah...", opts:["Langsung memberikan surat peringatan kepada seluruh staf gudang","Melakukan diskusi pribadi untuk memahami penyebab keterlambatan, lalu menyusun aturan kehadiran bersama","Membiarkan sementara karena masih periode adaptasi","Melaporkan masalah ke atasan dan meminta mereka menyelesaikannya"], ans:1, exp:"Pendekatan proaktif dan partisipatif (diskusi → aturan bersama) adalah terbaik. Manajer yang baik mencari akar masalah sebelum memberikan sanksi, dan melibatkan tim dalam solusi untuk meningkatkan kepatuhan." },
+    { q:"Anda diminta menyusun program kerja koperasi untuk tahun depan. Langkah pertama yang paling tepat adalah...", opts:["Langsung menulis program kerja berdasarkan pengalaman pribadi","Menganalisis kinerja tahun berjalan, kebutuhan anggota, dan target nasional sebelum menyusun program","Menyalin program kerja koperasi lain yang sudah berhasil","Menunggu instruksi lengkap dari PT Agrinas sebelum memulai"], ans:1, exp:"Program kerja yang baik harus berbasis data dan analisis: evaluasi kinerja lalu, needs assessment anggota, dan penyelarasan dengan target korporat/nasional. Ini adalah prinsip perencanaan yang sistematis (SMART Goals)." },
+    { q:"Terdapat konflik antara dua anggota koperasi terkait alokasi pupuk bersubsidi. Langkah Anda sebagai manajer adalah...", opts:["Memihak anggota yang sudah lebih lama bergabung","Memediasi keduanya dengan menjelaskan kriteria alokasi objektif berdasarkan data luas lahan","Menyerahkan masalah ini kepada pengurus koperasi","Menunda pembagian pupuk sampai konflik reda sendiri"], ans:1, exp:"Mediasi berbasis data objektif (luas lahan, kebutuhan aktual) adalah solusi yang adil dan transparan. Manajer harus mampu menyelesaikan konflik dengan standar yang jelas, bukan berdasarkan subjektivitas." },
+    { q:"Gaya kepemimpinan yang paling tepat untuk staf baru yang antusias tetapi belum berpengalaman adalah...", opts:["Delegating — menyerahkan sepenuhnya kepada staf","Coaching — memberikan tugas dengan bimbingan dan penjelasan alasan","Supporting — mendukung ide tanpa banyak arahan","Directing — memberikan instruksi jelas dan mengawasi ketat"], ans:3, exp:"Menurut teori kepemimpinan situasional Hersey-Blanchard, untuk individu motivasi tinggi tapi kompetensi rendah (M1), gaya Directing (S1) adalah yang paling tepat: instruksi jelas + pengawasan ketat hingga kompetensi terbentuk." },
+    { q:"KPI koperasi yang paling relevan untuk mengukur kontribusi terhadap program ketahanan pangan nasional adalah...", opts:["Jumlah pegawai yang hadir tepat waktu","Volume gabah/komoditas pangan yang berhasil diserap dari petani anggota","Jumlah rapat pengurus yang diselenggarakan","Total simpanan pokok anggota yang terkumpul"], ans:1, exp:"Inti misi KDKMP adalah penyerapan komoditas pangan dari petani untuk mendukung ketahanan pangan nasional. Volume serapan gabah/pangan adalah KPI yang paling langsung mengukur dampak program ini." },
+    { q:"Seorang staf melaporkan bahwa kepala gudang meminta 'uang rokok' dari pemasok bahan pokok. Tindakan Anda adalah...", opts:["Menasihati kepala gudang secara pribadi tanpa laporan formal","Mengabaikan karena nilainya kecil dan tidak material","Melakukan investigasi, mencatat bukti, dan melaporkan ke atasan/pengawas koperasi sesuai prosedur","Menegur kepala gudang di depan seluruh staf"], ans:2, exp:"Gratifikasi, meskipun kecil, adalah pelanggaran integritas yang harus ditangani prosedural. Investigasi terlebih dahulu untuk memastikan fakta, lalu laporkan melalui jalur resmi (pengawas koperasi). Ini menjaga integritas tanpa persekusi prematur." },
+    { q:"Urutan prioritas tindakan yang tepat: (1) Laporan keuangan jatuh tempo besok, (2) Anggota baru mendaftar, (3) Pemasok mengeluh pembayaran tertunda, (4) Rapat koordinasi tim 2 jam lagi.", opts:["(2), (3), (1), (4) — anggota selalu prioritas utama","(4), (1), (3), (2) — rapat tidak bisa ditunda","(1), (3), (4), (2) — kewajiban finansial paling mendesak","(3), (2), (1), (4) — hubungan mitra harus dijaga"], ans:2, exp:"Laporan keuangan memiliki deadline ketat (besok), pemasok tidak dibayar bisa mengganggu rantai pasokan pangan, rapat tim sudah terjadwal. Pendaftaran anggota baru bisa dijadwalkan ulang tanpa konsekuensi besar." },
+    { q:"Dalam RAT, mayoritas anggota menginginkan program yang menurut Anda secara teknis kurang efektif. Sikap Anda sebagai manajer adalah...", opts:["Menolak keputusan RAT karena Anda lebih memahami teknis operasional","Menerima keputusan RAT sebagai kekuasaan tertinggi, menyiapkan rencana implementasi terbaik sambil memberikan masukan teknis secara formal","Diam dan melaksanakan sesuka hati","Meminta RAT ditunda sampai anggota lebih paham aspek teknis"], ans:1, exp:"RAT adalah kekuasaan tertinggi koperasi. Manajer wajib menghormati keputusan demokratis anggota. Namun, manajer juga bertanggung jawab memberikan masukan teknis yang benar — keduanya bisa dilakukan bersamaan." },
+    { q:"Untuk mencapai target distribusi beras ke 500 KK namun kendaraan distribusi rusak dan anggaran perbaikan tidak tersedia segera, solusi terbaik adalah...", opts:["Menunda distribusi hingga kendaraan selesai diperbaiki","Melaporkan kendala ke atasan dan menunggu solusi","Berkoordinasi dengan BUMDes, pemerintah desa, atau mitra swasta untuk solusi transportasi alternatif sementara","Mengurangi target distribusi bulan ini"], ans:2, exp:"Orientasi hasil berarti mencari solusi kreatif, bukan menyerah pada hambatan. Koordinasi lintas pihak (BUMDes, Pemdes, swasta) menunjukkan kemampuan networking dan resource mobilization yang esensial bagi manajer koperasi desa." },
+    { q:"Manakah yang BUKAN merupakan ciri kepemimpinan yang baik bagi manajer koperasi desa?", opts:["Transparan dalam pengelolaan keuangan kepada anggota","Mengambil keputusan berdasarkan data dan musyawarah","Merahasiakan laporan keuangan dari anggota untuk menghindari kekhawatiran","Membangun kapasitas staf melalui pelatihan berkelanjutan"], ans:2, exp:"Merahasiakan laporan keuangan dari anggota adalah pelanggaran prinsip transparansi dan akuntabilitas koperasi. Anggota berhak mendapatkan informasi keuangan — dijamin UU 25/1992 dan dibahas terbuka dalam RAT." }
+  ],
+  2: [
+    { q:"Berdasarkan UU No. 25 Tahun 1992, kekuasaan tertinggi dalam koperasi dipegang oleh...", opts:["Ketua Pengurus Koperasi","Rapat Anggota","Badan Pengawas","Manajer Koperasi"], ans:1, exp:"Pasal 22 UU 25/1992 menyatakan Rapat Anggota merupakan pemegang kekuasaan tertinggi koperasi. RAT membahas pertanggungjawaban pengurus, laporan keuangan, program kerja, dan pembagian SHU." },
+    { q:"SHU koperasi Rp 200 juta. AD/ART: 30% dana cadangan, 40% jasa anggota, 10% pengurus, 10% pendidikan, 10% dana sosial. Berapa total yang dibagikan kepada anggota?", opts:["Rp 60 juta","Rp 80 juta","Rp 100 juta","Rp 120 juta"], ans:1, exp:"Jasa anggota = 40% × Rp 200 juta = Rp 80 juta. Ini adalah bagian SHU yang dibagikan kembali kepada anggota berdasarkan kontribusi masing-masing (jasa simpanan + jasa usaha)." },
+    { q:"Prinsip koperasi yang membedakannya dari badan usaha lain (PT) adalah...", opts:["Tujuan utama memaksimalkan keuntungan pemilik saham","Keanggotaan bersifat tertutup dan selektif","Pengelolaan secara demokratis (1 anggota = 1 suara) dan SHU sesuai kontribusi anggota","Modal berasal sepenuhnya dari pemerintah"], ans:2, exp:"Koperasi berlandaskan prinsip demokratis (one member, one vote) dan keadilan (SHU proporsional dengan kontribusi anggota). Berbeda fundamental dari PT yang menerapkan one share, one vote dan profit untuk pemegang saham." },
+    { q:"Pak Tono: simpanan Rp 5 juta dari total simpanan Rp 50 juta. Transaksi Rp 10 juta dari total transaksi Rp 100 juta. SHU jasa modal Rp 20 juta, jasa usaha Rp 30 juta. SHU Pak Tono?", opts:["Rp 3,5 juta","Rp 5 juta","Rp 4 juta","Rp 2 juta"], ans:1, exp:"Jasa modal = (5/50) × 20 juta = Rp 2 juta. Jasa usaha = (10/100) × 30 juta = Rp 3 juta. Total SHU = Rp 2 + Rp 3 = Rp 5 juta." },
+    { q:"Modal koperasi yang dibayarkan satu kali saat pertama masuk menjadi anggota disebut...", opts:["Simpanan wajib","Simpanan sukarela","Simpanan pokok","Dana cadangan"], ans:2, exp:"Simpanan pokok dibayar satu kali saat seseorang resmi menjadi anggota koperasi. Besarnya sama untuk semua anggota dan tidak dapat diambil kembali selama masih menjadi anggota." },
+    { q:"Peran utama KDKMP dalam konteks ketahanan pangan nasional adalah...", opts:["Memberikan kredit usaha kepada petani tanpa bunga","Menjadi agregator hasil panen petani dan menjamin akses input pertanian di tingkat desa","Mengimpor pangan murah untuk dijual kepada anggota","Mengelola dana desa untuk pembangunan infrastruktur"], ans:1, exp:"KDKMP berfungsi sebagai agregator (penghimpun) komoditas pangan dari petani anggota, sekaligus memastikan petani mendapat akses input (benih, pupuk) yang terjangkau — menguatkan rantai pasok pangan dari hulu ke hilir di tingkat desa." },
+    { q:"Laporan keuangan koperasi yang menunjukkan posisi aset, kewajiban, dan ekuitas pada satu titik waktu disebut...", opts:["Laporan SHU","Laporan Arus Kas","Neraca (Balance Sheet)","Laporan Perubahan Modal"], ans:2, exp:"Neraca (laporan posisi keuangan) menunjukkan potret kondisi keuangan koperasi pada tanggal tertentu: Aset = Kewajiban + Ekuitas. Berbeda dari laporan SHU yang mencerminkan kinerja sepanjang periode." },
+    { q:"Komoditas pangan strategis utama yang menjadi fokus program swasembada pangan Indonesia adalah...", opts:["Kopi, teh, dan coklat","Beras, jagung, dan kedelai","Singkong, ubi, dan sagu","Buah-buahan tropis dan sayuran"], ans:1, exp:"Beras, jagung, dan kedelai adalah tiga komoditas pangan strategis utama Indonesia karena merupakan sumber karbohidrat dan protein pokok mayoritas penduduk serta memiliki nilai impor yang besar." },
+    { q:"Anggota koperasi yang sudah tidak aktif bertransaksi 2 tahun ingin mendapatkan SHU. Yang tepat adalah...", opts:["Berhak penuh karena masih terdaftar sebagai anggota","Hanya mendapat bagian dari jasa modal (simpanan), tidak dari jasa usaha","Tidak berhak sama sekali karena sudah tidak aktif","Keputusan sepenuhnya kebijaksanaan pengurus"], ans:1, exp:"SHU dihitung dari dua komponen: jasa simpanan (modal) dan jasa usaha (transaksi). Anggota yang tidak bertransaksi selama 2 tahun tetap memiliki simpanan, sehingga berhak atas jasa modal. Namun jasa usahanya nol." },
+    { q:"Strategi manajer koperasi desa untuk meningkatkan volume penyerapan gabah petani yang paling efektif adalah...", opts:["Menurunkan harga beli gabah agar margin koperasi lebih tinggi","Menetapkan harga kompetitif/setara HPP, menyediakan jasa jemput ke sawah, dan memberikan akses input murah sebagai insentif","Hanya membeli gabah dari petani dengan sertifikat organik","Bekerjasama dengan pengepul untuk bersama membeli gabah"], ans:1, exp:"Peningkatan volume serapan memerlukan kombinasi harga kompetitif, kemudahan akses (jemput gabah), dan nilai tambah bagi anggota (input murah). Ini menunjukkan pemahaman holistik tentang peran koperasi sebagai mitra petani." }
+  ],
+  3: [
+    { q:"Analogi: PETANI : SAWAH = NELAYAN : ...", opts:["Ikan","Laut","Jaring","Perahu"], ans:1, exp:"Petani bekerja di sawah (tempat kerja/berproduksi). Analogi: Nelayan bekerja di laut (tempat kerja/berproduksi). Hubungan: profesi → tempat bekerja." },
+    { q:"Analogi: KOPERASI : SHU = PERUSAHAAN (PT) : ...", opts:["Pajak","Dividen","Gaji","Modal"], ans:1, exp:"SHU adalah keuntungan yang dibagikan koperasi kepada anggotanya. Padanannya pada PT adalah dividen, yaitu keuntungan yang dibagikan kepada pemegang saham." },
+    { q:"Semua manajer koperasi harus memahami laporan keuangan. Budi adalah manajer koperasi. Kesimpulan yang tepat adalah...", opts:["Budi mungkin tidak memahami laporan keuangan","Budi belum tentu memahami laporan keuangan","Budi pasti memahami laporan keuangan","Tidak dapat disimpulkan apapun"], ans:2, exp:"Silogisme sederhana (Modus Ponens): Semua A adalah B. Budi adalah A. → Budi adalah B. 'Semua manajer koperasi harus memahami laporan keuangan' + 'Budi adalah manajer koperasi' → 'Budi pasti memahami laporan keuangan'." },
+    { q:"Jika semua petani adalah anggota koperasi, dan semua anggota koperasi mendapatkan pupuk subsidi, maka...", opts:["Hanya petani yang mendapat pupuk subsidi","Beberapa anggota koperasi tidak mendapat pupuk subsidi","Semua petani mendapatkan pupuk subsidi","Tidak semua petani mendapatkan pupuk subsidi"], ans:2, exp:"Logika transitif: Semua petani → anggota koperasi → mendapat pupuk subsidi. Maka semua petani pasti mendapat pupuk subsidi." },
+    { q:"Deret: 3, 6, 12, 24, 48, ...", opts:["60","72","96","84"], ans:2, exp:"Pola geometri: setiap suku × 2. 48 × 2 = 96." },
+    { q:"Deret: 2, 5, 10, 17, 26, ...", opts:["35","37","36","38"], ans:1, exp:"Beda antar suku: 3, 5, 7, 9, ... (pola beda bertambah 2). Beda berikutnya = 11. Suku berikutnya = 26 + 11 = 37." },
+    { q:"Deret: 80, 40, 20, 10, ...", opts:["8","5","6","4"], ans:1, exp:"Pola: setiap suku ÷ 2. 10 ÷ 2 = 5." },
+    { q:"Koperasi menjual beras 100 kg @ Rp 12.000/kg. Harga beli dari petani Rp 10.000/kg. Keuntungan koperasi adalah...", opts:["Rp 100.000","Rp 200.000","Rp 150.000","Rp 250.000"], ans:1, exp:"Keuntungan per kg = Rp 12.000 − Rp 10.000 = Rp 2.000. Total = 100 × Rp 2.000 = Rp 200.000." },
+    { q:"Koperasi memiliki 200 anggota. Tahun ini 15% anggota baru bergabung. Jumlah anggota sekarang?", opts:["215 orang","225 orang","230 orang","220 orang"], ans:2, exp:"Anggota baru = 15% × 200 = 30 orang. Total = 200 + 30 = 230 orang." },
+    { q:"Harga pupuk naik 20% dari Rp 150.000/sak. Harga baru?", opts:["Rp 165.000","Rp 180.000","Rp 175.000","Rp 170.000"], ans:1, exp:"Kenaikan = 20% × Rp 150.000 = Rp 30.000. Harga baru = Rp 150.000 + Rp 30.000 = Rp 180.000." },
+    { q:"SHU koperasi Rp 120 juta. 40% untuk jasa anggota. Pak Ahmad bertransaksi Rp 15 juta dari total transaksi koperasi Rp 300 juta. Bagian SHU Pak Ahmad dari jasa usaha?", opts:["Rp 2,4 juta","Rp 1,8 juta","Rp 2 juta","Rp 3 juta"], ans:0, exp:"Jasa anggota = 40% × 120 juta = Rp 48 juta. Proporsi Pak Ahmad = 15/300 = 5%. SHU Pak Ahmad = 5% × Rp 48 juta = Rp 2,4 juta." },
+    { q:"Analogi: GABAH : BERAS = SUSU : ...", opts:["Sapi","Keju","Krim","Peternak"], ans:1, exp:"Gabah diolah menjadi beras (bahan baku → produk olahan). Susu diolah menjadi keju (bahan baku → produk olahan). Pola: bahan mentah → produk turunannya." }
+  ],
+  4: [
+    { q:"Pasal dalam UUD 1945 yang menjadi landasan hukum utama bagi keberadaan koperasi sebagai soko guru perekonomian nasional adalah...", opts:["Pasal 27 ayat (2)","Pasal 33 ayat (1)","Pasal 34 ayat (1)","Pasal 28D ayat (2)"], ans:1, exp:"Pasal 33 ayat (1) UUD 1945: 'Perekonomian disusun sebagai usaha bersama berdasar atas asas kekeluargaan.' Ini adalah landasan konstitusional koperasi sebagai bentuk usaha bersama berbasis kekeluargaan." },
+    { q:"Sila ke-5 Pancasila 'Keadilan Sosial bagi Seluruh Rakyat Indonesia' paling tepat tercermin dalam konteks koperasi melalui...", opts:["Pembagian SHU yang proporsional berdasarkan kontribusi dan kebutuhan anggota","Pembatasan jumlah keanggotaan koperasi agar lebih terkontrol","Pemberian bonus khusus bagi anggota yang paling kaya","Penolakan anggota yang berasal dari luar desa"], ans:0, exp:"Keadilan sosial dalam koperasi diwujudkan melalui pembagian SHU yang adil dan proporsional berdasarkan kontribusi (jasa usaha dan jasa modal) setiap anggota — mencerminkan pemerataan ekonomi berbasis kinerja." },
+    { q:"Konsep 'Bela Negara' dalam konteks non-militer yang paling relevan bagi manajer koperasi pangan adalah...", opts:["Mengikuti latihan militer secara sukarela","Memastikan ketahanan pangan desa sehingga mengurangi ketergantungan impor dan memperkuat kedaulatan ekonomi","Membayar pajak tepat waktu","Memakai seragam batik pada hari nasional"], ans:1, exp:"Bela negara non-militer mencakup semua upaya memperkuat ketahanan nasional. Manajer koperasi pangan yang memastikan kecukupan pangan desa berkontribusi pada ketahanan pangan nasional — bagian integral pertahanan negara." },
+    { q:"Wawasan Nusantara sebagai cara pandang bangsa Indonesia memandang keberagaman suku dan budaya sebagai...", opts:["Ancaman terhadap persatuan yang harus diseragamkan","Kekuatan dan kekayaan bangsa yang harus dijaga dalam bingkai NKRI","Masalah yang perlu diselesaikan oleh pemerintah pusat","Urusan daerah yang tidak perlu diperhatikan secara nasional"], ans:1, exp:"Wawasan Nusantara memandang keberagaman Indonesia sebagai anugerah dan kekuatan, bukan ancaman. Bhinneka Tunggal Ika — berbeda-beda tetapi tetap satu — menjadi landasan pengelolaan keberagaman dalam kerangka NKRI." },
+    { q:"Nilai-nilai ANEKA yang harus dimiliki pengelola lembaga yang berafiliasi dengan program pemerintah adalah...", opts:["Ambisi, Networking, Efisiensi, Kreativitas, Advokasi","Akuntabilitas, Nasionalisme, Etika publik, Komitmen mutu, Antikorupsi","Adaptasi, Negosiasi, Evaluasi, Kolaborasi, Aktualisasi","Analisis, Naratif, Eksplorasi, Komunikasi, Asesmen"], ans:1, exp:"ANEKA = Akuntabilitas, Nasionalisme, Etika publik, Komitmen mutu, Antikorupsi — 5 nilai dasar ASN dan pengelola program pemerintah untuk memastikan tata kelola yang baik dan bersih." },
+    { q:"Berdasarkan UU Desa No. 6/2014, hubungan antara koperasi desa dan BUMDes paling tepat digambarkan sebagai...", opts:["BUMDes harus dibubarkan agar tidak bersaing dengan koperasi desa","Keduanya dapat saling bersinergi dan bermitra untuk pemberdayaan ekonomi desa","BUMDes adalah badan yang mengawasi kinerja koperasi desa","Koperasi desa adalah bagian struktural dari BUMDes"], ans:1, exp:"UU Desa mendorong sinergi antar lembaga ekonomi desa. Koperasi desa dan BUMDes memiliki basis hukum berbeda tetapi keduanya bertujuan memberdayakan ekonomi desa — dapat bermitra daripada bersaing." },
+    { q:"Ketahanan nasional dibangun di atas 8 gatra. Kontribusi koperasi pangan desa paling langsung terhadap gatra manakah?", opts:["Gatra Ideologi","Gatra Ekonomi","Gatra Pertahanan dan Keamanan","Gatra Sosial Budaya"], ans:1, exp:"8 Gatra Ketahanan Nasional: Geografi, Demografi, SDA, Ideologi, Politik, Ekonomi, Sosial Budaya, Hankam. Koperasi pangan desa berkontribusi paling langsung pada Gatra Ekonomi melalui penyerapan produksi pangan dan distribusi merata." },
+    { q:"Prinsip demokrasi dalam koperasi yang membedakannya dari sistem voting dalam perusahaan terbuka (PT) adalah...", opts:["Koperasi menggunakan sistem one share one vote","Koperasi menggunakan sistem one member one vote","Koperasi tidak menerapkan sistem voting","Voting koperasi hanya berlaku bagi pengurus"], ans:1, exp:"Koperasi menerapkan 'one member, one vote' — setiap anggota memiliki satu hak suara tanpa memperhatikan besar simpanannya. Berbeda dari PT yang menerapkan 'one share, one vote' — pemegang saham terbesar memiliki suara terbanyak." },
+    { q:"Alinea ke-4 Pembukaan UUD 1945 menyebutkan tujuan negara. Yang paling relevan dengan misi koperasi pangan desa adalah...", opts:["Melindungi segenap bangsa dan seluruh tumpah darah Indonesia","Memajukan kesejahteraan umum","Mencerdaskan kehidupan bangsa","Ikut melaksanakan ketertiban dunia"], ans:1, exp:"Dari 4 tujuan negara dalam Alinea 4 UUD 1945, 'memajukan kesejahteraan umum' paling relevan dengan misi koperasi pangan. Koperasi berkontribusi langsung pada peningkatan kesejahteraan masyarakat desa." },
+    { q:"Pasal 30 UUD 1945 menyatakan bahwa bela negara adalah hak dan kewajiban setiap WNI. Dalam konteks koperasi pangan, implementasi bela negara yang paling tepat adalah...", opts:["Mengikuti pelatihan militer setiap akhir pekan","Menolak produk pangan impor secara mutlak","Mengelola koperasi dengan profesional untuk memperkuat kemandirian pangan dan kesejahteraan petani","Mengikuti seminar geopolitik dan pertahanan nasional"], ans:2, exp:"Bela negara non-militer paling nyata bagi manajer koperasi adalah mengelola koperasi dengan profesional dan berintegritas — memperkuat kemandirian pangan desa yang berkontribusi pada ketahanan dan kedaulatan pangan nasional." }
+  ]
+};
+
+const quizState={1:{},2:{},3:{},4:{}};
+const quizScores={1:0,2:0,3:0,4:0};
+let totalAnswered=0, totalCorrect=0;
+
+function showTab(idx){
+  document.querySelectorAll('.section-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleAcc(btn){
+  const isOpen=btn.classList.contains('open');
+  btn.classList.toggle('open',!isOpen);
+  btn.nextElementSibling.classList.toggle('open',!isOpen);
+}
+function renderQuiz(qid){
+  const data=quizData[qid]; if(!data) return;
+  const container=document.getElementById('quiz-'+qid); if(!container) return;
+  container.innerHTML=data.map((q,qi)=>`
+    <div class="question-card" id="qcard-${qid}-${qi}">
+      <div class="q-number">Soal ${qi+1} dari ${data.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options" id="opts-${qid}-${qi}">
+        ${q.opts.map((o,oi)=>`<button class="option-btn" onclick="selectOption(${qid},${qi},${oi})" id="opt-${qid}-${qi}-${oi}"><span class="opt-label">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}
+      </div>
+      <div class="explanation" id="exp-${qid}-${qi}"></div>
+    </div>`).join('');
+}
+function selectOption(qid,qi,oi){
+  const q=quizData[qid][qi];
+  if(quizState[qid][qi]!==undefined) return;
+  quizState[qid][qi]=oi;
+  const isCorrect=oi===q.ans;
+  if(isCorrect){quizScores[qid]++;totalCorrect++;}
+  totalAnswered++;
+  for(let i=0;i<q.opts.length;i++){
+    const btn=document.getElementById(`opt-${qid}-${qi}-${i}`);
+    btn.disabled=true;
+    if(i===q.ans) btn.classList.add('correct');
+    else if(i===oi&&!isCorrect) btn.classList.add('wrong');
+  }
+  const exp=document.getElementById(`exp-${qid}-${qi}`);
+  exp.textContent=(isCorrect?'✓ Benar! ':'✗ Kurang tepat. ')+q.exp;
+  exp.classList.add('show');
+  if(!isCorrect) exp.classList.add('wrong-exp');
+  updateCounter(qid);updateProgress();checkAllAnswered(qid);
+}
+function updateCounter(qid){
+  const total=quizData[qid].length;
+  const answered=Object.keys(quizState[qid]).length;
+  const el=document.getElementById('q'+qid+'-counter');
+  if(el) el.textContent=`${answered} / ${total} dijawab`;
+}
+function updateProgress(){
+  const totalQ=Object.values(quizData).reduce((s,a)=>s+a.length,0);
+  const pct=Math.round((totalAnswered/totalQ)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('globalScore').textContent=totalCorrect;
+  document.getElementById('globalTotal').textContent=totalAnswered;
+}
+function checkAllAnswered(qid){
+  const total=quizData[qid].length;
+  const answered=Object.keys(quizState[qid]).length;
+  if(answered>=total){
+    const wrong=total-quizScores[qid];
+    document.getElementById('score-'+qid).textContent=quizScores[qid];
+    document.getElementById('correct-'+qid).textContent=quizScores[qid];
+    document.getElementById('wrong-'+qid).textContent=wrong;
+    document.getElementById('skip-'+qid).textContent=0;
+    const rp=document.getElementById('result-'+qid);
+    rp.classList.add('show');
+    setTimeout(()=>rp.scrollIntoView({behavior:'smooth',block:'nearest'}),200);
+    document.querySelectorAll('.tab-btn')[qid]?.classList.add('done');
+  }
+}
+function resetQuiz(qid){
+  const sc=quizScores[qid];
+  totalCorrect-=sc; totalAnswered-=quizData[qid].length; quizScores[qid]=0;
+  quizState[qid]={};
+  renderQuiz(qid);
+  document.getElementById('result-'+qid).classList.remove('show');
+  updateCounter(qid);updateProgress();
+  document.querySelectorAll('.tab-btn')[qid]?.classList.remove('done');
+}
+
+const checklistItems=[
+  "Cetak Kartu Ujian di phtc.panselnas.go.id",
+  "Cek lokasi tes dan estimasi waktu perjalanan",
+  "Siapkan KTP asli dan fotokopi",
+  "Hafal 7 Prinsip Koperasi (UU 25/1992)",
+  "Kuasai rumus SHU anggota + contoh soal",
+  "Review Pasal 33 UUD 1945 dan 5 Sila Pancasila",
+  "Latihan soal TIU dengan timer (deret & persentase)",
+  "Pelajari tabel kepemimpinan situasional (S1–S4)",
+  "Review ANEKA dan 5 nilai dasar bela negara",
+  "Tidur cukup (7–8 jam) malam sebelum tes",
+  "Sarapan bergizi hari-H tes",
+  "Tiba di lokasi minimal 30 menit sebelum ujian"
+];
+function renderChecklist(){
+  const wrap=document.getElementById('checklist-wrap'); if(!wrap) return;
+  let saved={};
+  try{saved=JSON.parse(localStorage.getItem('cat_checklist')||'{}');}catch(e){}
+  wrap.innerHTML=checklistItems.map((item,i)=>`
+    <label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);cursor:pointer;font-size:14px;color:var(--text-secondary);">
+      <input type="checkbox" id="chk-${i}" onchange="saveChecklist()" ${saved[i]?'checked':''} style="width:16px;height:16px;flex-shrink:0;accent-color:var(--green-600);">
+      <span style="${saved[i]?'text-decoration:line-through;color:var(--gray-200)':''}" id="chk-label-${i}">${item}</span>
+    </label>`).join('');
+}
+function saveChecklist(){
+  const saved={};
+  checklistItems.forEach((_,i)=>{
+    const chk=document.getElementById('chk-'+i);
+    saved[i]=chk?chk.checked:false;
+    const lbl=document.getElementById('chk-label-'+i);
+    if(lbl) lbl.style.cssText=saved[i]?'text-decoration:line-through;color:var(--gray-200)':'';
+  });
+  try{localStorage.setItem('cat_checklist',JSON.stringify(saved));}catch(e){}
+}
+</script>
+</body>
+</html>
