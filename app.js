@@ -2,8 +2,6 @@
 //  app.js — Modul CAT KDKMP Agrinas v4
 //  Mengelola: paywall, quiz engine, progress, accordion, tabs, reveal
 // ════════════════════════════════════════════════════════════════
-// Di app.js tambahkan:
-import { SUBMODULES } from './questions.js';
 
 'use strict';
 
@@ -463,7 +461,6 @@ document.addEventListener('click', function(e) {
     }
   }
 });
-
 
 // ════════════════════════════════════════════════════════════════
 // AUTO-UNLOCK jika sudah bayar sebelumnya
