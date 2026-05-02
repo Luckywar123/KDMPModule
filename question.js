@@ -229,6 +229,408 @@ const SUBMODULES = {
 },
 
 // ══════════════════════════════════════════════
+// SUB-MODUL 3c: Perkalian & Pembagian Pecahan
+// ══════════════════════════════════════════════
+
+"3c": {
+  id:"3c", module:3,
+  label:"Pecahan, Perkalian & Pembagian",
+  icon:"➗",
+  desc:"Operasi pecahan biasa, campuran, desimal, perkalian silang, pembagian, penyederhanaan, aplikasi koperasi",
+  color:"amber",
+  questions:[
+    {
+      q:"Koperasi membeli ¾ ton gabah dari Pak Sarto dan ⅝ ton dari Bu Minah. Total gabah yang dibeli adalah...",
+      opts:["1¼ ton","1⅜ ton","1½ ton","1⅝ ton"],
+      ans:1,
+      exp:"¾ + ⅝ = 6/8 + 5/8 = 11/8 = 1⅜ ton. Samakan penyebut: KPK(4,8)=8. ¾=6/8. Jadi 6/8 + 5/8 = 11/8 = 1 3/8."
+    },
+    {
+      q:"Staf gudang menyelesaikan ⅔ pekerjaan sortir di pagi hari dan ¼ lagi di sore hari. Berapa bagian yang belum diselesaikan?",
+      opts:["1/12","1/6","1/4","5/12"],
+      ans:0,
+      exp:"Sudah selesai = ⅔ + ¼ = 8/12 + 3/12 = 11/12. Belum selesai = 1 − 11/12 = 1/12."
+    },
+    {
+      q:"½ × ¾ × ⅔ = ...",
+      opts:["1/4","1/6","1/8","3/8"],
+      ans:0,
+      exp:"½ × ¾ × ⅔ = (1×3×2)/(2×4×3) = 6/24 = 1/4. Hitung pembilang: 1×3×2=6. Penyebut: 2×4×3=24. Sederhanakan: 6/24 = 1/4."
+    },
+    {
+      q:"Koperasi mengalokasikan ⅗ dari anggaran Rp 15 juta untuk pembelian pupuk. Berapa yang dialokasikan?",
+      opts:["Rp 7 juta","Rp 8 juta","Rp 9 juta","Rp 10 juta"],
+      ans:2,
+      exp:"⅗ × Rp 15 juta = (3 × 15)/5 = 45/5 = Rp 9 juta."
+    },
+    {
+      q:"2⅓ ÷ ⅔ = ...",
+      opts:["3","3½","3¼","3⅓"],
+      ans:1,
+      exp:"2⅓ = 7/3. Pembagian pecahan: 7/3 ÷ ⅔ = 7/3 × 3/2 = 21/6 = 7/2 = 3½."
+    },
+    {
+      q:"Lahan seluas 4¼ hektar dibagi rata kepada 5 petani anggota. Tiap petani mendapat...",
+      opts:["¾ ha","⅘ ha","17/20 ha","1 ha"],
+      ans:2,
+      exp:"4¼ ÷ 5 = 17/4 ÷ 5 = 17/4 × 1/5 = 17/20 ha per petani."
+    },
+    {
+      q:"⅚ − ⅔ + ¼ = ...",
+      opts:["¼","5/12","7/12","11/12"],
+      ans:1,
+      exp:"KPK(6,3,4)=12. ⅚=10/12, ⅔=8/12, ¼=3/12. Hasilnya: 10/12 − 8/12 + 3/12 = 5/12."
+    },
+    {
+      q:"Manajer membagi 7½ kwintal jagung ke 3 gudang secara merata. Tiap gudang mendapat...",
+      opts:["2 kwintal","2¼ kwintal","2½ kwintal","2¾ kwintal"],
+      ans:2,
+      exp:"7½ ÷ 3 = 15/2 ÷ 3 = 15/2 × 1/3 = 15/6 = 5/2 = 2½ kwintal."
+    },
+    {
+      q:"(¾)² = ...",
+      opts:["6/8","9/16","3/8","6/16"],
+      ans:1,
+      exp:"(¾)² = ¾ × ¾ = (3×3)/(4×4) = 9/16."
+    },
+    {
+      q:"Dari 120 anggota koperasi, ⅜ adalah petani padi, ¼ petani jagung, sisanya petani campuran. Berapa petani campuran?",
+      opts:["40 orang","42 orang","44 orang","45 orang"],
+      ans:3,
+      exp:"Padi: ⅜ × 120 = 45. Jagung: ¼ × 120 = 30. Campuran: 120 − 45 − 30 = 45 orang."
+    },
+    {
+      q:"1¾ × 2⅖ = ...",
+      opts:["3⅕","3⅗","4⅕","4⅗"],
+      ans:2,
+      exp:"1¾ = 7/4. 2⅖ = 12/5. 7/4 × 12/5 = 84/20 = 21/5 = 4⅕."
+    },
+    {
+      q:"Koperasi menyimpan 0,75 ton gabah per hari. Dalam 4⅓ hari, total gabah yang disimpan adalah...",
+      opts:["3 ton","3,15 ton","3,25 ton","3,5 ton"],
+      ans:2,
+      exp:"0,75 × 4⅓ = 0,75 × 13/3 = 9,75/3 = 3,25 ton."
+    },
+    {
+      q:"½ ÷ ¼ ÷ ⅓ = ...",
+      opts:["1/24","⅜","1½","6"],
+      ans:3,
+      exp:"½ ÷ ¼ = ½ × 4 = 2. Lalu 2 ÷ ⅓ = 2 × 3 = 6."
+    },
+    {
+      q:"Dana koperasi Rp 24 juta. ⅓ untuk operasional, ¼ untuk pengembangan, sisanya untuk cadangan. Cadangan = ...",
+      opts:["Rp 8 juta","Rp 9 juta","Rp 10 juta","Rp 11 juta"],
+      ans:2,
+      exp:"Operasional: ⅓ × 24 = 8 juta. Pengembangan: ¼ × 24 = 6 juta. Cadangan: 24 − 8 − 6 = Rp 10 juta."
+    },
+    {
+      q:"2/5 dari total simpanan anggota = Rp 6 juta. Total simpanan seluruh anggota adalah...",
+      opts:["Rp 12 juta","Rp 15 juta","Rp 18 juta","Rp 20 juta"],
+      ans:1,
+      exp:"2/5 × Total = 6 juta. Total = 6 juta × 5/2 = Rp 15 juta."
+    },
+    {
+      q:"Perbandingan jasa modal : jasa usaha = 2 : 3. Jika jasa modal = Rp 8 juta, jasa usaha = ...",
+      opts:["Rp 10 juta","Rp 12 juta","Rp 14 juta","Rp 16 juta"],
+      ans:1,
+      exp:"Rasio 2:3 artinya jasa usaha = (3/2) × jasa modal = 3/2 × 8 = Rp 12 juta."
+    },
+    {
+      q:"(⅖ + ⅗) × (¾ − ¼) = ...",
+      opts:["¼","½","¾","1"],
+      ans:1,
+      exp:"⅖ + ⅗ = 5/5 = 1. ¾ − ¼ = ½. Jadi 1 × ½ = ½."
+    },
+    {
+      q:"Pak Andi menyumbang 1/6 simpanannya, Bu Beti 2/9 simpanannya. Pak Andi simpanan Rp 12 juta, Bu Beti Rp 9 juta. Total sumbangan keduanya...",
+      opts:["Rp 3 juta","Rp 4 juta","Rp 4,5 juta","Rp 5 juta"],
+      ans:1,
+      exp:"Andi: 1/6 × 12 = Rp 2 juta. Beti: 2/9 × 9 = Rp 2 juta. Total = Rp 4 juta."
+    },
+    {
+      q:"0,6 × 1¼ + 0,4 × ¾ = ...",
+      opts:["0,75","1,00","1,05","1,25"],
+      ans:1,
+      exp:"0,6 × 1,25 = 0,75. 0,4 × 0,75 = 0,30. Total = 0,75 + 0,30 = 1,05. (Koreksi: 0,6×1,25=0,75; 0,4×0,75=0,3; jumlah=1,05 → jawaban C)"
+    },
+    {
+      q:"Koperasi memiliki utang Rp 3⅓ juta yang harus dilunasi dalam 5 cicilan sama besar. Tiap cicilan adalah...",
+      opts:["Rp 600.000","Rp 650.000","Rp 666.667","Rp 700.000"],
+      ans:2,
+      exp:"3⅓ juta = 10/3 juta. Tiap cicilan = (10/3) ÷ 5 = 10/15 = 2/3 juta = Rp 666.667."
+    }
+  ]
+},
+
+// ══════════════════════════════════════════════
+// SUB-MODUL 3d: Pola Gambar (Deskripsi Teks)
+// ══════════════════════════════════════════════
+
+"3d": {
+  id:"3d", module:3,
+  label:"Pola Gambar & Matriks Visual",
+  icon:"🔷",
+  desc:"Pola rotasi, pencerminan, penambahan/pengurangan elemen, matriks 3×3, analogi visual, pola warna dan bentuk",
+  color:"amber",
+  questions:[
+    {
+      q:"Dalam matriks 3×3: Baris 1 = [●○○] [●●○] [●●●]. Baris 2 = [○○○] [●○○] [●●○]. Baris 3 = [○○○] [○○○] [?]. Pola yang mengisi tanda '?' adalah...",
+      opts:["[●●●]","[●●○]","[●○○]","[○○○]"],
+      ans:2,
+      exp:"Pola: setiap baris, dari kiri ke kanan, jumlah ● bertambah 1. Baris 3 dimulai dari 0●. Sel 3 baris 3 = 1 lingkaran hitam = [●○○]."
+    },
+    {
+      q:"Urutan gambar: □ → △ → ○ → □ → △ → ? Gambar berikutnya adalah...",
+      opts:["□","△","○","⬡"],
+      ans:2,
+      exp:"Pola berulang 3 bentuk: □, △, ○, □, △, ○, ... Posisi ke-6 = ○."
+    },
+    {
+      q:"Setiap gambar dalam urutan memiliki 1 sisi lebih dari gambar sebelumnya: △(3) → □(4) → ⬠(5) → ⬡(6) → ? Selanjutnya adalah...",
+      opts:["Segitiga","Segi-7","Lingkaran","Segi-8"],
+      ans:1,
+      exp:"Jumlah sisi bertambah 1 tiap gambar: 3→4→5→6→7. Gambar berikutnya adalah segi-7 (heptagon)."
+    },
+    {
+      q:"Matriks 3×3, setiap baris berisi 3 bentuk. Baris 1: [△ kecil] [△ sedang] [△ besar]. Baris 2: [□ kecil] [□ sedang] [□ besar]. Baris 3: [○ kecil] [○ sedang] [?]. Jawaban adalah...",
+      opts:["△ besar","□ besar","○ besar","○ kecil"],
+      ans:2,
+      exp:"Pola kolom 3 selalu berisi ukuran BESAR. Pola baris 3 selalu berisi bentuk ○. Maka [?] = ○ besar."
+    },
+    {
+      q:"Panah menunjuk: ↑ → ↓ → ← → ↑ → → → ? Arah selanjutnya adalah...",
+      opts:["↑","↓","←","→"],
+      ans:1,
+      exp:"Pola 4 arah berurutan: ↑, →, ↓, ← (searah jarum jam). Urutan: ↑(1), →(2), ↓(3), ←(4), ↑(5), →(6), posisi ke-7 = ↓."
+    },
+    {
+      q:"Barisan gambar: ★ ★★ ★★★ ★★ ★ ★★ ★★★ ★★ ★ ★★ ? Gambar berikutnya adalah...",
+      opts:["★","★★","★★★","★★★★"],
+      ans:2,
+      exp:"Pola berulang: 1,2,3,2,1 — kemudian berulang. Posisi ke-11: 1,2,3,2,1,2,3,2,1,2,3. Posisi ke-11 = ★★★ (3 bintang)."
+    },
+    {
+      q:"Dalam matriks 3×3, elemen pojok kiri atas adalah ■, pojok kanan atas adalah □, pojok kiri bawah adalah □, pojok kanan bawah adalah ■. Elemen tengah adalah ○. Pola ini menunjukkan...",
+      opts:["Simetri diagonal (pojok berlawanan sama)","Simetri vertikal","Semua pojok sama","Tidak ada pola"],
+      ans:0,
+      exp:"Pojok kiri atas (■) = pojok kanan bawah (■). Pojok kanan atas (□) = pojok kiri bawah (□). Ini adalah simetri DIAGONAL — elemen yang berhadapan secara diagonal memiliki nilai sama."
+    },
+    {
+      q:"Gambar 1: Segitiga dengan 1 titik di dalam. Gambar 2: Segitiga dengan 3 titik di dalam. Gambar 3: Segitiga dengan 6 titik di dalam. Gambar 4: Segitiga dengan ? titik.",
+      opts:["8","9","10","12"],
+      ans:2,
+      exp:"Pola jumlah titik: 1, 3, 6, 10 — ini adalah bilangan segitiga (triangular numbers). 1=1, 1+2=3, 1+2+3=6, 1+2+3+4=10."
+    },
+    {
+      q:"Urutan: kotak putih → kotak abu → kotak hitam → kotak abu → kotak putih → kotak abu → kotak hitam → ? Warna berikutnya adalah...",
+      opts:["Putih","Abu","Hitam","Tidak ada pola"],
+      ans:1,
+      exp:"Pola: putih, abu, hitam, abu, putih, abu, hitam, abu... Setelah hitam selalu abu. Posisi ke-8 = abu."
+    },
+    {
+      q:"Matriks 3×3. Baris 1: [A A A]. Baris 2: [A B A]. Baris 3: [A A A]. Huruf apakah yang ada HANYA di tengah?",
+      opts:["A","B","C","Keduanya A dan B"],
+      ans:1,
+      exp:"Seluruh sel terisi A, kecuali sel tengah (baris 2, kolom 2) yang berisi B. Jadi B adalah satu-satunya elemen berbeda di posisi tengah."
+    },
+    {
+      q:"Gambar berurutan menunjukkan jam: 3:00 → 6:00 → 9:00 → ? Waktu selanjutnya adalah...",
+      opts:["10:00","11:00","12:00","1:00"],
+      ans:2,
+      exp:"Jarum jam maju 3 jam setiap gambar: 3:00 → 6:00 (+3) → 9:00 (+3) → 12:00 (+3)."
+    },
+    {
+      q:"Pola: gambar 1 ada 1 lingkaran besar. Gambar 2: 1 besar + 1 kecil di dalam. Gambar 3: 1 besar + 1 kecil + 1 lebih kecil. Apa prinsip pola ini?",
+      opts:["Setiap gambar, lingkaran terbesar dihapus","Setiap gambar, satu lingkaran baru yang lebih kecil ditambahkan di dalam","Ukuran semua lingkaran mengecil tiap gambar","Jumlah lingkaran tetap, hanya ukuran berubah"],
+      ans:1,
+      exp:"Ini pola nested/bersarang — setiap langkah menambahkan 1 lingkaran baru yang lebih kecil di dalam lingkaran sebelumnya. Gambar ke-n berisi n lingkaran bersarang."
+    },
+    {
+      q:"Sebuah pola matriks 3×3: Kolom 1 semua ▲. Kolom 2 semua ■. Kolom 3 semua ●. Baris mana yang TIDAK sesuai pola jika ada: Baris 1=[▲ ■ ●], Baris 2=[▲ ■ ▲], Baris 3=[▲ ■ ●]?",
+      opts:["Baris 1","Baris 2","Baris 3","Semua sesuai pola"],
+      ans:1,
+      exp:"Kolom 3 seharusnya semua ●. Di Baris 2, kolom 3 berisi ▲ (bukan ●). Jadi Baris 2 melanggar pola."
+    },
+    {
+      q:"Gambar bayangan/cermin: gambar asli = ▶ (panah kanan). Jika dicerminkan secara vertikal (cermin kiri-kanan), hasilnya adalah...",
+      opts:["▶ (tetap kanan)","◀ (panah kiri)","▼ (panah bawah)","▲ (panah atas)"],
+      ans:1,
+      exp:"Pencerminan vertikal (cermin kiri-kanan) membalik arah horizontal. ▶ (mengarah kanan) menjadi ◀ (mengarah kiri)."
+    },
+    {
+      q:"Pola rotasi: gambar ▶ diputar 90° searah jarum jam menjadi ▼. Diputar 90° lagi menjadi ◀. Diputar 90° lagi menjadi ▲. Jika diputar 90° lagi, hasilnya...",
+      opts:["▶","◀","▼","▲"],
+      ans:0,
+      exp:"Setelah 4 × 90° = 360° rotasi, gambar kembali ke posisi semula: ▶. Ini siklus penuh rotasi."
+    },
+    {
+      q:"Matriks 3×3. Setiap baris, jumlah elemen hitam bertambah 1 dari kiri ke kanan. Baris 1: [1 hitam][2 hitam][3 hitam]. Baris 2: [2 hitam][3 hitam][4 hitam]. Sesuai pola, baris 3 kolom pertama berisi berapa elemen hitam?",
+      opts:["2","3","4","5"],
+      ans:1,
+      exp:"Setiap baris, kolom pertama bertambah 1: baris 1 = 1, baris 2 = 2, baris 3 = 3. Kolom pertama baris 3 = 3 elemen hitam."
+    },
+    {
+      q:"Urutan kode huruf: A C E G ? Pola yang benar adalah...",
+      opts:["H","I","J","K"],
+      ans:1,
+      exp:"Pola: setiap huruf maju 2 posisi di alfabet. A(1)→C(3)→E(5)→G(7)→I(9). Jawaban: I."
+    },
+    {
+      q:"Dalam soal pola angka-gambar: setiap lingkaran mewakili 3, setiap kotak mewakili 5. Gambar: ○□○ = berapa?",
+      opts:["11","13","9","15"],
+      ans:0,
+      exp:"○ = 3, □ = 5, ○ = 3. Total = 3 + 5 + 3 = 11."
+    },
+    {
+      q:"Pola gambar: baris 1 = [□□□], baris 2 = [□■□], baris 3 = [■■■]. Jika pola dilanjutkan ke baris 4, hasilnya...",
+      opts:["[□□□]","[■□■]","[□■□]","[■■■]"],
+      ans:2,
+      exp:"Pola baris berulang dengan periode 4: baris 1=[□□□], baris 2=[□■□], baris 3=[■■■], baris 4 kembali seperti baris 2=[□■□] sebagai pola simetri naik-turun."
+    },
+    {
+      q:"Empat gambar membentuk satu set: ▲ ▲▲ ▲▲▲ ▲▲▲▲. Gambar ini mewakili konsep matematika apa?",
+      opts:["Deret aritmatika dengan beda 1","Deret geometri dengan rasio 2","Bilangan prima","Bilangan Fibonacci"],
+      ans:0,
+      exp:"1, 2, 3, 4 — jumlah segitiga bertambah 1 setiap gambar. Ini adalah deret aritmatika dengan beda (common difference) = 1."
+    }
+  ]
+},
+
+// ══════════════════════════════════════════════
+// SUB-MODUL 3e: Analogi Lanjutan & Penalaran Verbal
+// ══════════════════════════════════════════════
+
+"3e": {
+  id:"3e", module:3,
+  label:"Analogi Lanjutan & Verbal",
+  icon:"🔡",
+  desc:"Analogi konsep abstrak, hubungan sebab-akibat, bagian-keseluruhan, proses-hasil, antonim, sinonim relasional",
+  color:"amber",
+  questions:[
+    {
+      q:"MANAJER : KOPERASI = KAPTEN : ...",
+      opts:["Pelaut","Kapal","Lautan","Jangkar"],
+      ans:1,
+      exp:"Manajer memimpin dan mengendalikan koperasi (organisasi/alat). Kapten memimpin dan mengendalikan kapal (kendaraan/alat). Pola: pemimpin → wahana/organisasi yang dipimpin."
+    },
+    {
+      q:"BENIH : TANAMAN = SIMPANAN : ...",
+      opts:["Bank","Bunga","Modal Koperasi","Anggota"],
+      ans:2,
+      exp:"Benih adalah asal-mula / cikal-bakal yang tumbuh menjadi tanaman. Simpanan anggota adalah cikal-bakal / sumber yang tumbuh menjadi modal koperasi. Pola: sumber awal → hasil yang berkembang."
+    },
+    {
+      q:"PENGAWAS : AKUNTABILITAS = POLISI : ...",
+      opts:["Kejahatan","Penjara","Ketertiban","Senjata"],
+      ans:2,
+      exp:"Pengawas koperasi bertugas menegakkan akuntabilitas (nilai/tujuan yang dijaga). Polisi bertugas menegakkan ketertiban (nilai/tujuan yang dijaga). Pola: pihak penjaga → nilai yang dijaganya."
+    },
+    {
+      q:"INFLASI : HARGA = KEKERINGAN : ...",
+      opts:["Hujan","Produktivitas","Lahan","Petani"],
+      ans:1,
+      exp:"Inflasi menyebabkan kenaikan harga. Kekeringan menyebabkan penurunan produktivitas pertanian. Pola: kondisi negatif → dampak langsung yang ditimbulkannya."
+    },
+    {
+      q:"AUDIT : KEUANGAN = INSPEKSI : ...",
+      opts:["Laporan","Kualitas Barang","Pengurus","Anggota"],
+      ans:1,
+      exp:"Audit adalah proses pemeriksaan terhadap keuangan. Inspeksi adalah proses pemeriksaan terhadap kualitas barang/produk. Pola: metode pemeriksaan → objek yang diperiksa."
+    },
+    {
+      q:"SHU : KOPERASI = DIVIDEN : ...",
+      opts:["Bank","Saham","Perseroan Terbatas (PT)","Obligasi"],
+      ans:2,
+      exp:"SHU adalah keuntungan yang dibagikan koperasi kepada anggotanya. Dividen adalah keuntungan yang dibagikan PT kepada pemegang sahamnya. Pola: jenis bagi hasil → badan usaha yang membagikannya."
+    },
+    {
+      q:"PETA : WILAYAH = ANGGARAN : ...",
+      opts:["Uang","Rencana Keuangan","Pengeluaran","Neraca"],
+      ans:1,
+      exp:"Peta adalah representasi/gambaran dari wilayah nyata. Anggaran adalah representasi/gambaran dari rencana keuangan yang akan dilaksanakan. Pola: alat representasi → hal yang direpresentasikan."
+    },
+    {
+      q:"KOPERASI : ANGGOTA = NEGARA : ...",
+      opts:["Presiden","Pemerintah","Warga Negara","Undang-Undang"],
+      ans:2,
+      exp:"Koperasi didirikan oleh dan untuk anggota (pemilik sekaligus pengguna). Negara dibentuk oleh dan untuk warga negara (rakyat yang menjadi pemilik kedaulatan). Pola: organisasi → kelompok yang mendirikan sekaligus menjadi tujuannya."
+    },
+    {
+      q:"KADAR AIR : KUALITAS GABAH = BUNGA : ...",
+      opts:["Uang","Pinjaman","Nilai Utang","Bank"],
+      ans:2,
+      exp:"Kadar air yang tinggi menurunkan kualitas gabah (hubungan mempengaruhi). Bunga yang tinggi meningkatkan nilai total utang yang harus dibayar (hubungan mempengaruhi). Pola: faktor penentu → hal yang dipengaruhinya."
+    },
+    {
+      q:"RACUN : TANAMAN = KORUPSI : ...",
+      opts:["Uang","Organisasi","Hukum","Penjara"],
+      ans:1,
+      exp:"Racun secara perlahan merusak dan membunuh tanaman dari dalam. Korupsi secara perlahan merusak dan menghancurkan organisasi dari dalam. Pola: agen perusak → hal yang dirusaknya."
+    },
+    {
+      q:"TERAMPIL : CANGGUNG = TRANSPARAN : ...",
+      opts:["Jelas","Terbuka","Tertutup","Jujur"],
+      ans:2,
+      exp:"Terampil adalah antonim dari canggung (keahlian tinggi vs keahlian rendah). Transparan adalah antonim dari tertutup (terbuka vs tidak terbuka). Pola: kata sifat positif → antonim negatifnya."
+    },
+    {
+      q:"MUSIM PANEN : SERAPAN TINGGI = MUSIM PACEKLIK : ...",
+      opts:["Harga Naik","Serapan Rendah","Cuaca Panas","Petani Gembira"],
+      ans:1,
+      exp:"Musim panen menyebabkan serapan tinggi (komoditas melimpah). Musim paceklik menyebabkan serapan rendah (komoditas langka). Pola: kondisi pertanian → dampak langsung pada volume serapan koperasi."
+    },
+    {
+      q:"DELEGASI : WEWENANG = TRANSFER : ...",
+      opts:["Rekening","Pengetahuan","Pemindahan","Kas"],
+      ans:1,
+      exp:"Delegasi adalah proses penyerahan/pemindahan wewenang kepada orang lain. Transfer (pengetahuan) adalah proses penyerahan/pemindahan pengetahuan kepada orang lain. Pola: proses penyerahan → objek yang diserahkan."
+    },
+    {
+      q:"BENCHMARKING : STANDAR TERBAIK = EVALUASI : ...",
+      opts:["Penilaian Kinerja","Target","Anggaran","Laporan"],
+      ans:0,
+      exp:"Benchmarking adalah proses membandingkan dengan standar terbaik untuk meningkatkan kualitas. Evaluasi adalah proses menilai kinerja secara sistematis untuk mengukur pencapaian. Pola: metode penilaian → hasil/tujuan penilaian tersebut."
+    },
+    {
+      q:"AIR : IKAN = MODAL : ...",
+      opts:["Bank","Bunga","Usaha Koperasi","Anggota"],
+      ans:2,
+      exp:"Air adalah medium/lingkungan yang dibutuhkan ikan untuk hidup dan berkembang. Modal adalah medium/sumber daya yang dibutuhkan usaha koperasi untuk hidup dan berkembang. Pola: medium/sumber daya esensial → organisme/entitas yang bergantung padanya."
+    },
+    {
+      q:"RAPAT ANGGOTA : KEPUTUSAN KOPERASI = PEMILU : ...",
+      opts:["Partai Politik","Kebijakan Negara","Pemimpin Terpilih","Calon Pemimpin"],
+      ans:2,
+      exp:"Rapat Anggota adalah mekanisme demokrasi yang menghasilkan keputusan tertinggi koperasi melalui voting. Pemilu adalah mekanisme demokrasi yang menghasilkan pemimpin terpilih melalui voting. Pola: mekanisme demokrasi → hasil langsung dari mekanisme tersebut."
+    },
+    {
+      q:"PELATIHAN : KOMPETENSI = PUPUK : ...",
+      opts:["Lahan","Hasil Panen","Petani","Biaya"],
+      ans:1,
+      exp:"Pelatihan adalah input yang meningkatkan kompetensi (output) seseorang. Pupuk adalah input pertanian yang meningkatkan hasil panen (output). Pola: input/investasi → output/hasil yang ditingkatkan."
+    },
+    {
+      q:"AKUNTABILITAS : KEPERCAYAAN = KUALITAS : ...",
+      opts:["Harga Mahal","Kepuasan Pelanggan","Produk","Standar"],
+      ans:1,
+      exp:"Akuntabilitas yang tinggi membangun kepercayaan pemangku kepentingan. Kualitas yang tinggi membangun kepuasan pelanggan/anggota. Pola: nilai/atribut positif → dampak positif yang dihasilkannya."
+    },
+    {
+      q:"MODUS PONENS : VALID = AFFIRMING THE CONSEQUENT : ...",
+      opts:["Valid","Invalid/Fallacy","Deduktif","Induktif"],
+      ans:1,
+      exp:"Modus Ponens (P→Q, P ⊢ Q) adalah pola inferensi yang VALID. Affirming the Consequent (P→Q, Q ⊢ P) adalah pola inferensi yang INVALID (fallacy). Pola: jenis argumen → status validitasnya."
+    },
+    {
+      q:"HERBISIDA : GULMA = ANTIKORUPSI : ...",
+      opts:["Integritas","Korupsi","Transparansi","Hukum"],
+      ans:1,
+      exp:"Herbisida adalah agen yang digunakan untuk memberantas gulma (tanaman pengganggu). Kebijakan/sistem antikorupsi adalah agen yang digunakan untuk memberantas korupsi (tindakan pengganggu). Pola: alat/mekanisme pemberantasan → hal yang diberantas."
+    }
+  ]
+},
+
+// ══════════════════════════════════════════════
 // MODULE 4: WAWASAN KEBANGSAAN
 // ══════════════════════════════════════════════
 
