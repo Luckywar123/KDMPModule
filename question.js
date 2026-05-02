@@ -3,9 +3,8 @@
 //  Struktur: Sub-Modul per topik, 20 soal per sub-modul
 //  Total sub-modul: 10 sub-modul = 200 soal
 // ════════════════════════════════════════════════════════════════
-// Dan di questions.js:
 
-export const SUBMODULES = {
+const SUBMODULES = {
 
 // ══════════════════════════════════════════════
 // MODULE 1: MANAJERIAL

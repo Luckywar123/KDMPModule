@@ -464,15 +464,6 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Expose fungsi ke global agar onclick di HTML bisa memanggil
-window.showTab = showTab;
-window.doVerify = doVerify;
-window.skipForDemo = skipForDemo;
-window.openTrakteer = openTrakteer;
-window.toggleAcc = toggleAcc;
-window.toggleChk = toggleChk;
-window.answerQ = answerQ;
-window.resetSub = resetSub;
 
 // ════════════════════════════════════════════════════════════════
 // AUTO-UNLOCK jika sudah bayar sebelumnya
