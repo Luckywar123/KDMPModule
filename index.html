@@ -333,11 +333,19 @@ hr{border:none;border-top:1px solid var(--bd);margin:28px 0}
         <div class="pw-price">Rp 15.000</div>
         <div class="pw-price-info"><div class="label">sekali bayar</div><div class="orig">akses selamanya</div></div>
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--txd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Langkah 1 — Bayar via Trakteer</div>
-      <button class="trakteer-btn" onclick="openTrakteer()">
-        <span class="trakteer-logo">trakteer</span>Bayar Rp 15.000 di Trakteer<span style="margin-left:auto;font-size:12px;opacity:.75">→</span>
-      </button>
-      <div class="pw-or">SELESAI BAYAR? LANJUT</div>
+      <div style="font-size:12px;font-weight:700;color:var(--txd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Langkah 1 — Pilih Metode Pembayaran</div>
+
+        <!-- Tombol Trakteer -->
+        <button class="trakteer-btn" onclick="window.open('https://trakteer.id/next-gen/shop/kdmp-module-pembelajaran-EvBG9', '_blank')" style="margin-bottom:12px">
+        <span class="trakteer-logo">trakteer</span>Bayar Rp 15.000 via Trakteer<span style="margin-left:auto;font-size:12px;opacity:.75">→</span>
+        </button>
+
+        <!-- Tombol Lynk.id (BARU) -->
+        <button class="trakteer-btn" onclick="window.open('http://lynk.id/andrewar123/llq2xx70d34v', '_blank')" style="background:linear-gradient(135deg,#1a1a2e,#16213e); margin-bottom:12px">
+        <span style="font-weight:900;letter-spacing:-.02em">lynk</span>Bayar Rp 15.000 via Lynk.id<span style="margin-left:auto;font-size:12px;opacity:.75">→</span>
+        </button>
+
+      <div class="pw-or">SUDAH BAYAR VIA TRAKTEER ATAU LYNK.ID? LANJUT</div>
       <div style="font-size:12px;font-weight:700;color:var(--txd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Langkah 2 — Masukkan Kode Akses</div>
       <div class="verif-section">
         <div class="verif-label">Masukkan kode akses 8 karakter yang dikirim via Trakteer:</div>
